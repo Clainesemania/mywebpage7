@@ -1,91 +1,113 @@
-const links = document.querySelectorAll("nav a")
-const panels = document.querySelectorAll(".panel")
+// --- Configuration ---
+const slider = document.getElementById('mainSlider');
+const sections = document.querySelectorAll('.slider-section');
+const dots = document.querySelectorAll('.slider-pagination .dot');
+const numSections = sections.length;
+let currentSectionIndex = 0;
+let isScrolling = false; // Flag to prevent multiple scrolls at once
 
-links.forEach(link=>{
+// --- Functions ---
 
-link.addEventListener("click",e=>{
+// Function to update the active section and pagination
+const updateActiveSection = (newIndex) => {
+    // 1. Remove active class from current section and its dot
+    sections[currentSectionIndex].classList.remove('active');
+    dots[currentSectionIndex].classList.remove('active');
 
-e.preventDefault()
+    // 2. Add active class to the new section and its dot
+    sections[newIndex].classList.add('active');
+    dots[newIndex].classList.add('active');
 
-const id = link.getAttribute("href").substring(1)
+    // 3. Move the entire main-slider container
+    slider.style.transform = `translateY(${newIndex * -100}vh)`;
 
-panels.forEach(panel=>{
-panel.classList.remove("active")
-})
+    // 4. Update the index
+    currentSectionIndex = newIndex;
+};
 
-document.getElementById(id).classList.add("active")
+// Function to handle the scrolling event (mouse wheel)
+const handleWheel = (event) => {
+    event.preventDefault(); // Prevent default browser scrolling
+    if (isScrolling) return; // Ignore if already mid-scroll
 
-})
+    let nextIndex;
+    if (event.deltaY > 0) {
+        // Scrolling down
+        nextIndex = currentSectionIndex + 1;
+    } else {
+        // Scrolling up
+        nextIndex = currentSectionIndex - 1;
+    }
 
-})
+    // Edge-case checks: prevent going out of bounds
+    if (nextIndex >= 0 && nextIndex < numSections) {
+        isScrolling = true; // Set flag
+        updateActiveSection(nextIndex);
 
-/* Dark Mode */
+        // Reset flag after transition speed is over
+        setTimeout(() => {
+            isScrolling = false;
+        }, 1000); // Wait for the transition to complete (CSS speed + small buffer)
+    }
+};
 
-const toggle = document.getElementById("themeToggle")
+// Function to handle dot clicks
+const handleDotClick = (event) => {
+    const dotIndex = parseInt(event.target.getAttribute('data-index'));
+    updateActiveSection(dotIndex);
+};
 
-toggle.onclick=()=>{
-document.body.classList.toggle("light")
-}
+// --- Touch Events (For Mobile) ---
+let touchStartY = 0;
+let touchEndY = 0;
 
-/* Loading Screen */
+const handleTouchStart = (event) => {
+    touchStartY = event.changedTouches[0].screenY;
+};
 
-window.onload=()=>{
+const handleTouchEnd = (event) => {
+    touchEndY = event.changedTouches[0].screenY;
+    handleTouchSwipe();
+};
 
-setTimeout(()=>{
+const handleTouchSwipe = () => {
+    if (isScrolling) return;
 
-document.getElementById("loader").style.display="none"
+    let nextIndex;
+    // Check swipe direction
+    if (touchEndY < touchStartY) {
+        // Swipe up -> Scroll down
+        nextIndex = currentSectionIndex + 1;
+    } else if (touchEndY > touchStartY) {
+        // Swipe down -> Scroll up
+        nextIndex = currentSectionIndex - 1;
+    }
 
-},1500)
+    // Edge cases and update
+    if (nextIndex >= 0 && nextIndex < numSections) {
+        isScrolling = true;
+        updateActiveSection(nextIndex);
+        setTimeout(() => {
+            isScrolling = false;
+        }, 1000);
+    }
+};
 
-}
+// --- Initial Setup & Event Listeners ---
 
-/* Particles */
+// 1. Position all sections in a column
+sections.forEach((section, index) => {
+    section.style.top = `${index * 100}vh`;
+});
 
-const canvas=document.getElementById("particles")
-const ctx=canvas.getContext("2d")
+// 2. Attach event listeners
+window.addEventListener('wheel', handleWheel, { passive: false }); // Wheel for desktop
 
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
+// 3. Dot click listener
+dots.forEach(dot => {
+    dot.addEventListener('click', handleDotClick);
+});
 
-let particleCount = window.innerWidth < 600 ? 40 : 80
-
-let particles=[]
-
-for(let i=0;i<particleCount;i++){
-
-particles.push({
-
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2,
-speed:Math.random()*0.5
-
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-particles.forEach(p=>{
-
-ctx.fillStyle="rgba(255,255,255,0.5)"
-
-ctx.beginPath()
-
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-
-ctx.fill()
-
-p.y+=p.speed
-
-if(p.y>canvas.height)p.y=0
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
+// 4. Touch events for mobile
+window.addEventListener('touchstart', handleTouchStart);
+window.addEventListener('touchend', handleTouchEnd);
