@@ -1,213 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Claine — Student, Developer & Creator. Personal portfolio." />
-  <title>Claine · Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claine | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --accent-primary: #2dd4bf;
+            --accent-secondary: #5eead4;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --transition-speed: 0.6s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden; /* Prevents scrolling so sections feel like slides */
+            height: 100vh;
+        }
+
+        /* --- Flashlight Effect --- */
+        #flashlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(
+                circle 150px at var(--x, 50%) var(--y, 50%), 
+                rgba(45, 212, 191, 0.15), 
+                transparent 80%
+            );
+            z-index: 9999;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 100;
+        }
+
+        nav button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        nav button.active {
+            background: var(--accent-primary);
+            transform: scale(1.5);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        /* --- Section Management --- */
+        section {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        section.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* --- Content Styling --- */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        h1 { font-size: 4rem; margin-bottom: 10px; }
+        h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        p { font-size: 1.2rem; color: var(--text-dim); max-width: 600px; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
+
+        .btn {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
+            transform: scale(1.05);
+        }
+
+        .img-placeholder {
+            width: 280px;
+            height: 180px;
+            background: #1e293b;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.05);
+        }
+
+        /* Responsive Mobile Fix */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            nav { bottom: 20px; top: auto; right: 50%; transform: translateX(50%); flex-direction: row; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ░ CURSOR GLOW ░ -->
-  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div id="flashlight"></div>
 
-  <!-- ░ NOISE GRAIN OVERLAY ░ -->
-  <canvas class="grain" id="grainCanvas" aria-hidden="true"></canvas>
+    <nav id="nav-dots">
+        </nav>
 
-  <!-- ░ GLOBAL BLOOM ORBS ░ -->
-  <div class="orb orb--gold"  aria-hidden="true"></div>
-  <div class="orb orb--mint"  aria-hidden="true"></div>
-  <div class="orb orb--deep"  aria-hidden="true"></div>
-
-  <!-- ░ SIDE NAV DOTS ░ -->
-  <nav class="sidenav" aria-label="Page sections">
-    <button class="sidenav__dot active" data-index="0" aria-label="Hero — Claine"></button>
-    <button class="sidenav__dot" data-index="1" aria-label="About Me"></button>
-    <button class="sidenav__dot" data-index="2" aria-label="GDevelop"></button>
-    <button class="sidenav__dot" data-index="3" aria-label="YouTube"></button>
-    <button class="sidenav__dot" data-index="4" aria-label="GitHub"></button>
-    <button class="sidenav__dot" data-index="5" aria-label="Still Improving"></button>
-    <!-- label tooltip -->
-    <span class="sidenav__label" id="navLabel"></span>
-  </nav>
-
-  <!-- ░░░ SECTIONS ░░░ -->
-  <main class="stage" id="stage">
-
-    <!-- ══ 01 HERO ══════════════════════════════════════ -->
-    <section class="panel" id="panel-0" data-index="0">
-      <div class="panel__bloom panel__bloom--hero" aria-hidden="true"></div>
-      <div class="panel__inner panel__inner--center">
-        <p class="hero__eyebrow reveal-up">Hello, World.</p>
-        <h1 class="hero__name" aria-label="Claine">
-          <span class="hero__char" style="--d:0">C</span><span
-               class="hero__char" style="--d:1">l</span><span
-               class="hero__char" style="--d:2">a</span><span
-               class="hero__char" style="--d:3">i</span><span
-               class="hero__char" style="--d:4">n</span><span
-               class="hero__char" style="--d:5">e</span>
-        </h1>
-        <p class="hero__role reveal-up" style="--delay:.55s">Student &nbsp;·&nbsp; Developer &nbsp;·&nbsp; Creator</p>
-        <div class="hero__cta reveal-up" style="--delay:.75s">
-          <button class="btn-ghost" id="btnScroll">Explore ↓</button>
-        </div>
-      </div>
-      <div class="hero__scroll-line" aria-hidden="true"></div>
+    <section id="s1" class="active">
+        <h1 class="gradient-text">Claine</h1>
+        <p>Student & Aspiring Web Developer</p>
+        <p style="margin-top: 15px;">Welcome to my personal digital space.</p>
     </section>
 
-    <!-- ══ 02 ABOUT ═════════════════════════════════════ -->
-    <section class="panel" id="panel-1" data-index="1">
-      <div class="panel__inner">
-        <span class="eyebrow reveal-up">02 &nbsp;/&nbsp; About</span>
-        <h2 class="section-heading reveal-up" style="--delay:.1s">About Me <span class="spin">😉</span></h2>
-        <p class="section-lead reveal-up" style="--delay:.18s">A little context behind the commits.</p>
-        <div class="cards reveal-up" style="--delay:.28s">
-          <article class="card">
-            <div class="card__icon">⭐</div>
-            <h3>Hobbies</h3>
-            <p>Gaming, Reading & Music — the trio that keeps me going between deadlines.</p>
-          </article>
-          <article class="card">
-            <div class="card__icon">🚀</div>
-            <h3>Future Plans</h3>
-            <p>Graduate, land a job I love, and build a life that supports the people I care about.</p>
-          </article>
-          <article class="card">
-            <div class="card__icon">💻</div>
-            <h3>Currently</h3>
-            <p>Learning web development one commit at a time — this very site is the proof.</p>
-          </article>
+    <section id="s2">
+        <div class="card">
+            <h2 class="gradient-text">About Me 😉</h2>
+            <p><strong>Hobbies:</strong> Gaming, Reading, Music</p>
+            <p style="margin-top: 10px;"><strong>Goal:</strong> Graduate and build a career to support my family.</p>
         </div>
-      </div>
     </section>
 
-    <!-- ══ 03 GDEVELOP ══════════════════════════════════ -->
-    <section class="panel" id="panel-2" data-index="2">
-      <div class="panel__bloom panel__bloom--gold" aria-hidden="true"></div>
-      <div class="panel__inner panel__inner--split">
-        <div class="split__text">
-          <span class="eyebrow reveal-up">03 &nbsp;/&nbsp; Project</span>
-          <h2 class="section-heading reveal-up" style="--delay:.08s">GDevelop</h2>
-          <p class="section-lead reveal-up" style="--delay:.16s">A game I built — no engine experience required.</p>
-          <ul class="tags reveal-up" style="--delay:.22s">
-            <li>Game Dev</li><li>GDevelop</li><li>Indie</li>
-          </ul>
-          <p class="body-text reveal-up" style="--delay:.3s">
-            Built with GDevelop's open-source no-code / low-code engine. Platforms, enemies, a score system — the whole deal. Jump in and play!
-          </p>
-          <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0"
-             target="_blank" rel="noopener"
-             class="btn-primary reveal-up" style="--delay:.4s">
-            Play Game <span class="arr">→</span>
-          </a>
-        </div>
-        <div class="split__media reveal-right">
-          <div class="mockup-frame">
-            <div class="mockup-bar">
-              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
-            </div>
-            <img src="images/pic02.jpg" alt="GDevelop game screenshot" loading="lazy" />
-          </div>
-          <div class="media-bloom media-bloom--gold" aria-hidden="true"></div>
-        </div>
-      </div>
+    <section id="s3">
+        <img src="images/pic02.jpg" alt="GDevelop" class="img-placeholder">
+        <h2>GDevelop</h2>
+        <p>A peek into my game development journey.</p>
+        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="btn">Play Game →</a>
     </section>
 
-    <!-- ══ 04 YOUTUBE ═══════════════════════════════════ -->
-    <section class="panel" id="panel-3" data-index="3">
-      <div class="panel__bloom panel__bloom--red" aria-hidden="true"></div>
-      <div class="panel__inner panel__inner--split panel__inner--rev">
-        <div class="split__media reveal-left">
-          <div class="mockup-frame">
-            <div class="mockup-bar">
-              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
-            </div>
-            <img src="images/pic03.jpg" alt="YouTube channel screenshot" loading="lazy" />
-          </div>
-          <div class="media-bloom media-bloom--red" aria-hidden="true"></div>
-        </div>
-        <div class="split__text">
-          <span class="eyebrow reveal-up">04 &nbsp;/&nbsp; Social</span>
-          <h2 class="section-heading reveal-up" style="--delay:.08s">YouTube</h2>
-          <p class="section-lead reveal-up" style="--delay:.16s">Simple gaming content, genuine reactions.</p>
-          <ul class="tags reveal-up" style="--delay:.22s">
-            <li>Gaming</li><li>Content Creation</li><li>YouTube</li>
-          </ul>
-          <p class="body-text reveal-up" style="--delay:.3s">
-            Watch me play, fail (a lot), and occasionally land something impressive. Subscribe for the journey — it only gets better from here.
-          </p>
-          <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z"
-             target="_blank" rel="noopener"
-             class="btn-primary reveal-up" style="--delay:.4s">
-            Watch Now <span class="arr">→</span>
-          </a>
-        </div>
-      </div>
+    <section id="s4">
+        <img src="images/pic03.jpg" alt="YouTube" class="img-placeholder">
+        <h2>YouTube</h2>
+        <p>Sharing my gaming content and simple edits.</p>
+        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="btn">Watch Channel →</a>
     </section>
 
-    <!-- ══ 05 GITHUB ════════════════════════════════════ -->
-    <section class="panel" id="panel-4" data-index="4">
-      <div class="panel__bloom panel__bloom--mint" aria-hidden="true"></div>
-      <div class="panel__inner panel__inner--split">
-        <div class="split__text">
-          <span class="eyebrow reveal-up">05 &nbsp;/&nbsp; Code</span>
-          <h2 class="section-heading reveal-up" style="--delay:.08s">GitHub</h2>
-          <p class="section-lead reveal-up" style="--delay:.16s">Where my code lives and breathes.</p>
-          <ul class="tags reveal-up" style="--delay:.22s">
-            <li>Open Source</li><li>Web Dev</li><li>Learning</li>
-          </ul>
-          <p class="body-text reveal-up" style="--delay:.3s">
-            Browse my repositories, follow the commit history, and watch a developer grow in real time — one push at a time.
-          </p>
-          <a href="https://github.com/Clainesemania"
-             target="_blank" rel="noopener"
-             class="btn-primary reveal-up" style="--delay:.4s">
-            View Profile <span class="arr">→</span>
-          </a>
-        </div>
-        <div class="split__media reveal-right">
-          <div class="mockup-frame">
-            <div class="mockup-bar">
-              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
-            </div>
-            <img src="images/pic04.jpg" alt="GitHub profile screenshot" loading="lazy" />
-          </div>
-          <div class="media-bloom media-bloom--mint" aria-hidden="true"></div>
-        </div>
-      </div>
+    <section id="s5">
+        <img src="images/pic04.jpg" alt="GitHub" class="img-placeholder">
+        <h2>GitHub</h2>
+        <p>Where my code lives and grows.</p>
+        <a href="https://github.com/Clainesemania" target="_blank" class="btn">View Source →</a>
     </section>
 
-    <!-- ══ 06 STILL IMPROVING ═══════════════════════════ -->
-    <section class="panel" id="panel-5" data-index="5">
-      <div class="panel__bloom panel__bloom--closing" aria-hidden="true"></div>
-      <div class="panel__inner panel__inner--center">
-        <span class="eyebrow reveal-up">06 &nbsp;/&nbsp; Closing</span>
-        <h2 class="closing__heading">
-          <span class="reveal-up" style="--delay:.1s">Still</span>
-          <em class="reveal-up" style="--delay:.22s">Improving.</em>
-        </h2>
-        <p class="closing__sub reveal-up" style="--delay:.35s">
-          This site — and the person behind it — is a work in progress.<br>
-          Every day is another commit toward something better.
-        </p>
-        <div class="closing__links reveal-up" style="--delay:.48s">
-          <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" rel="noopener" class="pill">GDevelop</a>
-          <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z" target="_blank" rel="noopener" class="pill">YouTube</a>
-          <a href="https://github.com/Clainesemania" target="_blank" rel="noopener" class="pill">GitHub</a>
-        </div>
-        <footer class="site-footer reveal-up" style="--delay:.62s">
-          <p>© 2025 Claine &nbsp;·&nbsp; Built with curiosity &amp; caffeine</p>
-        </footer>
-      </div>
+    <section id="s6">
+        <h2 class="gradient-text">Still Improving</h2>
+        <p>This portfolio is a work in progress, just like my skills.</p>
+        <div style="margin-top: 40px; opacity: 0.3;">____________________________</div>
     </section>
 
-  </main><!-- /stage -->
+    <script>
+        // --- Flashlight Logic ---
+        const light = document.getElementById('flashlight');
+        window.addEventListener('mousemove', e => {
+            light.style.setProperty('--x', e.clientX + 'px');
+            light.style.setProperty('--y', e.clientY + 'px');
+        });
 
-  <script src="script.js"></script>
+        // --- Navigation Logic ---
+        const sections = document.querySelectorAll('section');
+        const navDots = document.getElementById('nav-dots');
+        let currentStep = 0;
+
+        // Create Dots
+        sections.forEach((_, i) => {
+            const dot = document.createElement('button');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSection(i));
+            navDots.appendChild(dot);
+        });
+
+        function goToSection(index) {
+            sections[currentStep].classList.remove('active');
+            document.querySelectorAll('#nav-dots button')[currentStep].classList.remove('active');
+            
+            currentStep = index;
+            
+            sections[currentStep].classList.add('active');
+            document.querySelectorAll('#nav-dots button')[currentStep].classList.add('active');
+        }
+
+        // Mouse Wheel Navigation
+        window.addEventListener('wheel', (e) => {
+            if (e.deltaY > 0 && currentStep < sections.length - 1) {
+                goToSection(currentStep + 1);
+            } else if (e.deltaY < 0 && currentStep > 0) {
+                goToSection(currentStep - 1);
+            }
+        });
+    </script>
 </body>
-          </html>
-          
+</html>
