@@ -4,32 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claine | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --accent-primary: #2dd4bf;
-            --accent-secondary: #5eead4;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --transition-speed: 0.6s;
+            --midnight-emerald: #022c22;
+            --gold-leaf: #fbbf24;
+            --gold-muted: #b45309;
+            --text-light: #fef3c7;
+            --transition-speed: 0.8s;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow: hidden; /* Prevents scrolling so sections feel like slides */
+            background-color: var(--midnight-emerald);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
             height: 100vh;
         }
 
-        /* --- Flashlight Effect --- */
+        /* --- Animated Background Particles --- */
+        .bg-animate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.05;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); }
+            100% { transform: translateY(-10vh) scale(1.5); }
+        }
+
+        /* --- Smooth Flashlight (The Follower) --- */
         #flashlight {
             position: fixed;
             top: 0;
@@ -37,47 +60,56 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            /* Using a mask-like gradient */
             background: radial-gradient(
-                circle 150px at var(--x, 50%) var(--y, 50%), 
-                rgba(45, 212, 191, 0.15), 
+                circle 250px at var(--x, 50%) var(--y, 50%), 
+                rgba(251, 191, 36, 0.12), 
                 transparent 80%
             );
             z-index: 9999;
+            will-change: transform;
         }
 
-        /* --- Navigation --- */
-        nav {
+        /* --- Unique Vertical Gold Slider --- */
+        .nav-container {
             position: fixed;
-            right: 2rem;
+            left: 3rem;
             top: 50%;
             transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            height: 300px;
+            width: 2px;
+            background: rgba(251, 191, 36, 0.1);
             z-index: 100;
         }
 
-        nav button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .nav-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--gold-leaf);
+            transition: height 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            box-shadow: 0 0 15px var(--gold-leaf);
         }
 
-        nav button.active {
-            background: var(--accent-primary);
-            transform: scale(1.5);
-            box-shadow: 0 0 10px var(--accent-primary);
+        .nav-labels {
+            position: absolute;
+            left: 15px;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: var(--gold-leaf);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        /* --- Section Management --- */
+        /* --- Sections --- */
         section {
             position: absolute;
-            width: 100%;
-            height: 100vh;
+            inset: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -86,158 +118,182 @@
             padding: 2rem;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px);
-            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.95);
+            transition: all var(--transition-speed) cubic-bezier(0.645, 0.045, 0.355, 1);
         }
 
         section.active {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: scale(1);
         }
 
-        /* --- Content Styling --- */
-        .gradient-text {
-            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold-leaf);
+            margin-bottom: 1rem;
         }
 
-        h1 { font-size: 4rem; margin-bottom: 10px; }
-        h2 { font-size: 2.5rem; margin-bottom: 20px; }
-        p { font-size: 1.2rem; color: var(--text-dim); max-width: 600px; }
+        h1 { font-size: 4.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        p { line-height: 1.8; max-width: 500px; color: #d1d5db; }
 
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
-
-        .btn {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--accent-primary);
-            color: var(--bg-dark);
+        .gold-btn {
+            margin-top: 30px;
+            padding: 12px 35px;
+            border: 1px solid var(--gold-leaf);
+            background: transparent;
+            color: var(--gold-leaf);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.4s;
             text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: 0.3s;
         }
 
-        .btn:hover {
-            box-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
-            transform: scale(1.05);
+        .gold-btn:hover {
+            background: var(--gold-leaf);
+            color: var(--midnight-emerald);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
         }
 
-        .img-placeholder {
-            width: 280px;
-            height: 180px;
-            background: #1e293b;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.05);
+        .img-box {
+            width: 320px;
+            height: 200px;
+            border: 1px solid var(--gold-muted);
+            margin-bottom: 25px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
         }
 
-        /* Responsive Mobile Fix */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            nav { bottom: 20px; top: auto; right: 50%; transform: translateX(50%); flex-direction: row; }
-        }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3); }
     </style>
 </head>
 <body>
 
+    <div class="bg-animate" id="bg"></div>
     <div id="flashlight"></div>
 
-    <nav id="nav-dots">
-        </nav>
+    <div class="nav-container">
+        <div class="nav-progress" id="progress"></div>
+        <div class="nav-labels">
+            <span>01</span>
+            <span>02</span>
+            <span>03</span>
+            <span>04</span>
+            <span>05</span>
+            <span>06</span>
+        </div>
+    </div>
 
     <section id="s1" class="active">
-        <h1 class="gradient-text">Claine</h1>
-        <p>Student & Aspiring Web Developer</p>
-        <p style="margin-top: 15px;">Welcome to my personal digital space.</p>
+        <h1>Claine</h1>
+        <p>A formal presentation of my digital journey and web development aspirations.</p>
     </section>
 
     <section id="s2">
-        <div class="card">
-            <h2 class="gradient-text">About Me 😉</h2>
-            <p><strong>Hobbies:</strong> Gaming, Reading, Music</p>
-            <p style="margin-top: 10px;"><strong>Goal:</strong> Graduate and build a career to support my family.</p>
-        </div>
+        <h2>About Me</h2>
+        <p>Dedicated to crafting elegant digital solutions. <br> <strong>Hobbies:</strong> Gaming & Literature.</p>
+        <p style="margin-top: 20px;">Focused on supporting family through technological excellence.</p>
     </section>
 
     <section id="s3">
-        <img src="images/pic02.jpg" alt="GDevelop" class="img-placeholder">
+        <div class="img-box"><img src="images/pic02.jpg" alt="Game"></div>
         <h2>GDevelop</h2>
-        <p>A peek into my game development journey.</p>
-        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="btn">Play Game →</a>
+        <p>Interactive storytelling through game design.</p>
+        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="gold-btn">Explore Game</a>
     </section>
 
     <section id="s4">
-        <img src="images/pic03.jpg" alt="YouTube" class="img-placeholder">
+        <div class="img-box"><img src="images/pic03.jpg" alt="YT"></div>
         <h2>YouTube</h2>
-        <p>Sharing my gaming content and simple edits.</p>
-        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="btn">Watch Channel →</a>
+        <p>Visual content creation and gaming highlights.</p>
+        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="gold-btn">View Channel</a>
     </section>
 
     <section id="s5">
-        <img src="images/pic04.jpg" alt="GitHub" class="img-placeholder">
+        <div class="img-box"><img src="images/pic04.jpg" alt="Git"></div>
         <h2>GitHub</h2>
-        <p>Where my code lives and grows.</p>
-        <a href="https://github.com/Clainesemania" target="_blank" class="btn">View Source →</a>
+        <p>Open source contributions and code architecture.</p>
+        <a href="https://github.com/Clainesemania" target="_blank" class="gold-btn">Source Code</a>
     </section>
 
     <section id="s6">
-        <h2 class="gradient-text">Still Improving</h2>
-        <p>This portfolio is a work in progress, just like my skills.</p>
-        <div style="margin-top: 40px; opacity: 0.3;">____________________________</div>
+        <h2>Refining</h2>
+        <p>Currently improving skills in Frontend Architecture.</p>
+        <div style="color: var(--gold-muted); margin-top: 50px; letter-spacing: 5px;">EST. 2024</div>
     </section>
 
     <script>
-        // --- Flashlight Logic ---
-        const light = document.getElementById('flashlight');
-        window.addEventListener('mousemove', e => {
-            light.style.setProperty('--x', e.clientX + 'px');
-            light.style.setProperty('--y', e.clientY + 'px');
-        });
-
-        // --- Navigation Logic ---
-        const sections = document.querySelectorAll('section');
-        const navDots = document.getElementById('nav-dots');
-        let currentStep = 0;
-
-        // Create Dots
-        sections.forEach((_, i) => {
-            const dot = document.createElement('button');
-            if (i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => goToSection(i));
-            navDots.appendChild(dot);
-        });
-
-        function goToSection(index) {
-            sections[currentStep].classList.remove('active');
-            document.querySelectorAll('#nav-dots button')[currentStep].classList.remove('active');
-            
-            currentStep = index;
-            
-            sections[currentStep].classList.add('active');
-            document.querySelectorAll('#nav-dots button')[currentStep].classList.add('active');
+        // --- 1. Background Animation Generator ---
+        const bg = document.getElementById('bg');
+        for (let i = 0; i < 15; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 100 + 50;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDelay = Math.random() * 10 + 's';
+            bubble.style.opacity = Math.random() * 0.05;
+            bg.appendChild(bubble);
         }
 
-        // Mouse Wheel Navigation
+        // --- 2. Smooth "Chase" Flashlight Logic (Lerp) ---
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ballX = mouseX;
+        let ballY = mouseY;
+        const speed = 0.08; // Lower = smoother/slower follow
+
+        function animateFlashlight() {
+            // Linear Interpolation: Current position + (Target - Current) * speed
+            ballX += (mouseX - ballX) * speed;
+            ballY += (mouseY - ballY) * speed;
+
+            document.getElementById('flashlight').style.setProperty('--x', ballX + 'px');
+            document.getElementById('flashlight').style.setProperty('--y', ballY + 'px');
+            
+            requestAnimationFrame(animateFlashlight);
+        }
+        animateFlashlight();
+
+        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+        window.addEventListener('touchstart', e => { 
+            mouseX = e.touches[0].clientX; 
+            mouseY = e.touches[0].clientY; 
+        });
+
+        // --- 3. Section Navigation ---
+        const sections = document.querySelectorAll('section');
+        const progressBar = document.getElementById('progress');
+        let currentStep = 0;
+        let isScrolling = false;
+
+        function updateUI() {
+            sections.forEach((s, i) => {
+                s.classList.toggle('active', i === currentStep);
+            });
+            const progressHeight = ((currentStep) / (sections.length - 1)) * 100;
+            progressBar.style.height = progressHeight + '%';
+        }
+
         window.addEventListener('wheel', (e) => {
-            if (e.deltaY > 0 && currentStep < sections.length - 1) {
-                goToSection(currentStep + 1);
-            } else if (e.deltaY < 0 && currentStep > 0) {
-                goToSection(currentStep - 1);
+            if (isScrolling) return;
+            isScrolling = true;
+            
+            if (e.deltaY > 0 && currentStep < sections.length - 1) currentStep++;
+            else if (e.deltaY < 0 && currentStep > 0) currentStep--;
+            
+            updateUI();
+            setTimeout(() => { isScrolling = false; }, 800);
+        });
+
+        // Mobile Tap to Advance
+        window.addEventListener('click', (e) => {
+            if(e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+                currentStep = (currentStep + 1) % sections.length;
+                updateUI();
             }
         });
     </script>
