@@ -1,103 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claine Portfolio</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Claine — Student, Developer & Creator. Personal portfolio." />
+  <title>Claine · Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<!-- Particle background -->
-<div id="particles-js"></div>
+  <!-- ░ CURSOR GLOW ░ -->
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-<ul>
-<li><a href="#home">Home</a></li>
-<li><a href="#about">About</a></li>
-<li><a href="#gdevelop">GDevelop</a></li>
-<li><a href="#youtube">YouTube</a></li>
-<li><a href="#github">GitHub</a></li>
-<li><a href="#footer">Status</a></li>
-</ul>
-</nav>
+  <!-- ░ NOISE GRAIN OVERLAY ░ -->
+  <canvas class="grain" id="grainCanvas" aria-hidden="true"></canvas>
 
-<!-- SECTIONS -->
-<section id="home" class="section active glass">
-<h1>Claine</h1>
-<p class="tagline">Hello and Welcome to My Website</p>
-</section>
+  <!-- ░ GLOBAL BLOOM ORBS ░ -->
+  <div class="orb orb--gold"  aria-hidden="true"></div>
+  <div class="orb orb--mint"  aria-hidden="true"></div>
+  <div class="orb orb--deep"  aria-hidden="true"></div>
 
-<section id="about" class="section glass">
-<h2>About Me 😉</h2>
-<div class="card-container">
-<div class="card">
-<h3>⭐ Hobby</h3>
-<p>Gaming, Reading, Music</p>
-</div>
-<div class="card">
-<h3>⭐ Future Plans</h3>
-<p>Graduate and find a job to support my family.</p>
-</div>
-</div>
-</section>
+  <!-- ░ SIDE NAV DOTS ░ -->
+  <nav class="sidenav" aria-label="Page sections">
+    <button class="sidenav__dot active" data-index="0" aria-label="Hero — Claine"></button>
+    <button class="sidenav__dot" data-index="1" aria-label="About Me"></button>
+    <button class="sidenav__dot" data-index="2" aria-label="GDevelop"></button>
+    <button class="sidenav__dot" data-index="3" aria-label="YouTube"></button>
+    <button class="sidenav__dot" data-index="4" aria-label="GitHub"></button>
+    <button class="sidenav__dot" data-index="5" aria-label="Still Improving"></button>
+    <!-- label tooltip -->
+    <span class="sidenav__label" id="navLabel"></span>
+  </nav>
 
-<section id="gdevelop" class="section glass">
-<div class="project">
-<img src="images/pic02.jpg">
-<h2>GDevelop</h2>
-<p>Check out my game!</p>
-<a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank">Visit</a>
-</div>
-</section>
+  <!-- ░░░ SECTIONS ░░░ -->
+  <main class="stage" id="stage">
 
-<section id="youtube" class="section glass">
-<div class="project">
-<img src="images/pic03.jpg">
-<h2>YouTube</h2>
-<p>Watch my gaming content!</p>
-<a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z" target="_blank">Visit</a>
-</div>
-</section>
+    <!-- ══ 01 HERO ══════════════════════════════════════ -->
+    <section class="panel" id="panel-0" data-index="0">
+      <div class="panel__bloom panel__bloom--hero" aria-hidden="true"></div>
+      <div class="panel__inner panel__inner--center">
+        <p class="hero__eyebrow reveal-up">Hello, World.</p>
+        <h1 class="hero__name" aria-label="Claine">
+          <span class="hero__char" style="--d:0">C</span><span
+               class="hero__char" style="--d:1">l</span><span
+               class="hero__char" style="--d:2">a</span><span
+               class="hero__char" style="--d:3">i</span><span
+               class="hero__char" style="--d:4">n</span><span
+               class="hero__char" style="--d:5">e</span>
+        </h1>
+        <p class="hero__role reveal-up" style="--delay:.55s">Student &nbsp;·&nbsp; Developer &nbsp;·&nbsp; Creator</p>
+        <div class="hero__cta reveal-up" style="--delay:.75s">
+          <button class="btn-ghost" id="btnScroll">Explore ↓</button>
+        </div>
+      </div>
+      <div class="hero__scroll-line" aria-hidden="true"></div>
+    </section>
 
-<section id="github" class="section glass">
-<div class="project">
-<img src="images/pic04.jpg">
-<h2>GitHub</h2>
-<p>View my coding projects!</p>
-<a href="https://github.com/Clainesemania" target="_blank">Visit</a>
-</div>
-</section>
+    <!-- ══ 02 ABOUT ═════════════════════════════════════ -->
+    <section class="panel" id="panel-1" data-index="1">
+      <div class="panel__inner">
+        <span class="eyebrow reveal-up">02 &nbsp;/&nbsp; About</span>
+        <h2 class="section-heading reveal-up" style="--delay:.1s">About Me <span class="spin">😉</span></h2>
+        <p class="section-lead reveal-up" style="--delay:.18s">A little context behind the commits.</p>
+        <div class="cards reveal-up" style="--delay:.28s">
+          <article class="card">
+            <div class="card__icon">⭐</div>
+            <h3>Hobbies</h3>
+            <p>Gaming, Reading & Music — the trio that keeps me going between deadlines.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🚀</div>
+            <h3>Future Plans</h3>
+            <p>Graduate, land a job I love, and build a life that supports the people I care about.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">💻</div>
+            <h3>Currently</h3>
+            <p>Learning web development one commit at a time — this very site is the proof.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<section id="footer" class="section glass">
-<h2>Still Improving 🚀</h2>
-<p>This website will continue to grow as I learn more.</p>
-</section>
+    <!-- ══ 03 GDEVELOP ══════════════════════════════════ -->
+    <section class="panel" id="panel-2" data-index="2">
+      <div class="panel__bloom panel__bloom--gold" aria-hidden="true"></div>
+      <div class="panel__inner panel__inner--split">
+        <div class="split__text">
+          <span class="eyebrow reveal-up">03 &nbsp;/&nbsp; Project</span>
+          <h2 class="section-heading reveal-up" style="--delay:.08s">GDevelop</h2>
+          <p class="section-lead reveal-up" style="--delay:.16s">A game I built — no engine experience required.</p>
+          <ul class="tags reveal-up" style="--delay:.22s">
+            <li>Game Dev</li><li>GDevelop</li><li>Indie</li>
+          </ul>
+          <p class="body-text reveal-up" style="--delay:.3s">
+            Built with GDevelop's open-source no-code / low-code engine. Platforms, enemies, a score system — the whole deal. Jump in and play!
+          </p>
+          <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0"
+             target="_blank" rel="noopener"
+             class="btn-primary reveal-up" style="--delay:.4s">
+            Play Game <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="split__media reveal-right">
+          <div class="mockup-frame">
+            <div class="mockup-bar">
+              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+            </div>
+            <img src="images/pic02.jpg" alt="GDevelop game screenshot" loading="lazy" />
+          </div>
+          <div class="media-bloom media-bloom--gold" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
 
-<script src="script.js"></script>
-<script src="particles.js"></script>
-<script>
-  /* Particle.js initialization */
-  particlesJS('particles-js', {
-    "particles": {
-      "number": {"value": 80},
-      "color": {"value": ["#00ff7f","#ffd700","#000000"]},
-      "shape": {"type":"circle"},
-      "opacity":{"value":0.7},
-      "size":{"value":3},
-      "line_linked":{"enable":true,"distance":150,"color":"#00ff7f","opacity":0.4,"width":1},
-      "move":{"enable":true,"speed":2}
-    },
-    "interactivity": {
-      "events":{"onhover":{"enable":true,"mode":"repulse"}}
-    }
-  });
-</script>
+    <!-- ══ 04 YOUTUBE ═══════════════════════════════════ -->
+    <section class="panel" id="panel-3" data-index="3">
+      <div class="panel__bloom panel__bloom--red" aria-hidden="true"></div>
+      <div class="panel__inner panel__inner--split panel__inner--rev">
+        <div class="split__media reveal-left">
+          <div class="mockup-frame">
+            <div class="mockup-bar">
+              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+            </div>
+            <img src="images/pic03.jpg" alt="YouTube channel screenshot" loading="lazy" />
+          </div>
+          <div class="media-bloom media-bloom--red" aria-hidden="true"></div>
+        </div>
+        <div class="split__text">
+          <span class="eyebrow reveal-up">04 &nbsp;/&nbsp; Social</span>
+          <h2 class="section-heading reveal-up" style="--delay:.08s">YouTube</h2>
+          <p class="section-lead reveal-up" style="--delay:.16s">Simple gaming content, genuine reactions.</p>
+          <ul class="tags reveal-up" style="--delay:.22s">
+            <li>Gaming</li><li>Content Creation</li><li>YouTube</li>
+          </ul>
+          <p class="body-text reveal-up" style="--delay:.3s">
+            Watch me play, fail (a lot), and occasionally land something impressive. Subscribe for the journey — it only gets better from here.
+          </p>
+          <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z"
+             target="_blank" rel="noopener"
+             class="btn-primary reveal-up" style="--delay:.4s">
+            Watch Now <span class="arr">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
+    <!-- ══ 05 GITHUB ════════════════════════════════════ -->
+    <section class="panel" id="panel-4" data-index="4">
+      <div class="panel__bloom panel__bloom--mint" aria-hidden="true"></div>
+      <div class="panel__inner panel__inner--split">
+        <div class="split__text">
+          <span class="eyebrow reveal-up">05 &nbsp;/&nbsp; Code</span>
+          <h2 class="section-heading reveal-up" style="--delay:.08s">GitHub</h2>
+          <p class="section-lead reveal-up" style="--delay:.16s">Where my code lives and breathes.</p>
+          <ul class="tags reveal-up" style="--delay:.22s">
+            <li>Open Source</li><li>Web Dev</li><li>Learning</li>
+          </ul>
+          <p class="body-text reveal-up" style="--delay:.3s">
+            Browse my repositories, follow the commit history, and watch a developer grow in real time — one push at a time.
+          </p>
+          <a href="https://github.com/Clainesemania"
+             target="_blank" rel="noopener"
+             class="btn-primary reveal-up" style="--delay:.4s">
+            View Profile <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="split__media reveal-right">
+          <div class="mockup-frame">
+            <div class="mockup-bar">
+              <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+            </div>
+            <img src="images/pic04.jpg" alt="GitHub profile screenshot" loading="lazy" />
+          </div>
+          <div class="media-bloom media-bloom--mint" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 06 STILL IMPROVING ═══════════════════════════ -->
+    <section class="panel" id="panel-5" data-index="5">
+      <div class="panel__bloom panel__bloom--closing" aria-hidden="true"></div>
+      <div class="panel__inner panel__inner--center">
+        <span class="eyebrow reveal-up">06 &nbsp;/&nbsp; Closing</span>
+        <h2 class="closing__heading">
+          <span class="reveal-up" style="--delay:.1s">Still</span>
+          <em class="reveal-up" style="--delay:.22s">Improving.</em>
+        </h2>
+        <p class="closing__sub reveal-up" style="--delay:.35s">
+          This site — and the person behind it — is a work in progress.<br>
+          Every day is another commit toward something better.
+        </p>
+        <div class="closing__links reveal-up" style="--delay:.48s">
+          <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" rel="noopener" class="pill">GDevelop</a>
+          <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z" target="_blank" rel="noopener" class="pill">YouTube</a>
+          <a href="https://github.com/Clainesemania" target="_blank" rel="noopener" class="pill">GitHub</a>
+        </div>
+        <footer class="site-footer reveal-up" style="--delay:.62s">
+          <p>© 2025 Claine &nbsp;·&nbsp; Built with curiosity &amp; caffeine</p>
+        </footer>
+      </div>
+    </section>
+
+  </main><!-- /stage -->
+
+  <script src="script.js"></script>
 </body>
-</html>
+          </html>
+          
