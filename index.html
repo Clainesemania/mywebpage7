@@ -4,109 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claine | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --midnight-emerald: #022c22;
+            --emerald-deep: #022c22;
+            --ruby-rich: #800000;
+            --ruby-glow: #ff3131;
             --gold-leaf: #fbbf24;
             --gold-muted: #b45309;
             --text-light: #fef3c7;
-            --transition-speed: 0.8s;
+            --ease-elegant: cubic-bezier(0.65, 0, 0.35, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* --- Reset & Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--midnight-emerald);
+            background-color: var(--emerald-deep);
             color: var(--text-light);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
             height: 100vh;
+            cursor: crosshair;
         }
 
-        /* --- Animated Background Particles --- */
-        .bg-animate {
+        /* --- Background Particles (Optimized) --- */
+        #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             z-index: -1;
-            overflow: hidden;
+            background: radial-gradient(circle at bottom left, var(--ruby-rich), transparent 50%);
+            opacity: 0.5;
         }
 
-        .bubble {
+        .gold-bit {
             position: absolute;
-            background: radial-gradient(circle, var(--gold-leaf) 0%, transparent 70%);
+            background: var(--gold-leaf);
             border-radius: 50%;
-            opacity: 0.05;
-            animation: float 20s infinite linear;
+            opacity: 0.3;
+            filter: blur(1px);
+            animation: float-up 20s infinite linear;
         }
 
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0); }
-            100% { transform: translateY(-10vh) scale(1.5); }
+        @keyframes float-up {
+            0% { transform: translateY(110vh) translateX(0); }
+            100% { transform: translateY(-10vh) translateX(50px); }
         }
 
-        /* --- Smooth Flashlight (The Follower) --- */
+        /* --- Liquid Flashlight --- */
         #flashlight {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             pointer-events: none;
-            /* Using a mask-like gradient */
             background: radial-gradient(
-                circle 250px at var(--x, 50%) var(--y, 50%), 
-                rgba(251, 191, 36, 0.12), 
-                transparent 80%
+                circle 220px at var(--x, 50%) var(--y, 50%), 
+                rgba(128, 0, 0, 0.2) 0%, 
+                rgba(251, 191, 36, 0.1) 60%, 
+                transparent 100%
             );
             z-index: 9999;
-            will-change: transform;
+            will-change: auto;
         }
 
-        /* --- Unique Vertical Gold Slider --- */
-        .nav-container {
+        /* --- Horizontal Top Nav --- */
+        header {
             position: fixed;
-            left: 3rem;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 300px;
-            width: 2px;
-            background: rgba(251, 191, 36, 0.1);
-            z-index: 100;
-        }
-
-        .nav-progress {
-            position: absolute;
             top: 0;
-            left: 0;
             width: 100%;
-            background: var(--gold-leaf);
-            transition: height 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-            box-shadow: 0 0 15px var(--gold-leaf);
-        }
-
-        .nav-labels {
-            position: absolute;
-            left: 15px;
-            top: 0;
-            height: 100%;
+            padding: 30px 0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            color: var(--gold-leaf);
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--emerald-deep) 40%, transparent);
         }
 
-        /* --- Sections --- */
+        .nav-marks {
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Playfair Display', serif;
+            color: var(--gold-leaf);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            letter-spacing: 4px;
+        }
+
+        .progress-container {
+            width: 50%;
+            height: 1px;
+            background: rgba(251, 191, 36, 0.2);
+            position: relative;
+        }
+
+        .progress-bar {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--ruby-rich), var(--gold-leaf));
+            box-shadow: 0 0 10px var(--gold-leaf);
+            transition: width 0.8s var(--ease-elegant);
+        }
+
+        /* --- Section Logic --- */
         section {
             position: absolute;
             inset: 0;
@@ -118,183 +120,200 @@
             padding: 2rem;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.95);
-            transition: all var(--transition-speed) cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.9s var(--ease-elegant);
         }
 
         section.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
+            transform: translateY(0) scale(1);
         }
 
+        /* --- Typography & Elements --- */
         h1, h2 {
             font-family: 'Playfair Display', serif;
             color: var(--gold-leaf);
-            margin-bottom: 1rem;
+            text-transform: capitalize;
         }
 
-        h1 { font-size: 4.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        p { line-height: 1.8; max-width: 500px; color: #d1d5db; }
+        h1 { font-size: 5rem; letter-spacing: -2px; }
+        h2 { font-size: 2.8rem; margin-bottom: 15px; }
+        p { max-width: 550px; line-height: 1.8; color: #a1a1aa; font-weight: 300; }
 
-        .gold-btn {
-            margin-top: 30px;
-            padding: 12px 35px;
-            border: 1px solid var(--gold-leaf);
-            background: transparent;
-            color: var(--gold-leaf);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.4s;
-            text-decoration: none;
-        }
-
-        .gold-btn:hover {
-            background: var(--gold-leaf);
-            color: var(--midnight-emerald);
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-        }
-
-        .img-box {
-            width: 320px;
-            height: 200px;
-            border: 1px solid var(--gold-muted);
-            margin-bottom: 25px;
+        .img-frame {
+            position: relative;
             padding: 10px;
-            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--gold-muted);
+            background: rgba(0,0,0,0.3);
+            margin-bottom: 25px;
+            transition: 0.5s;
         }
 
-        .img-box img { width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3); }
+        .img-frame img {
+            width: 320px;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(40%) sepia(20%);
+            transition: 0.5s;
+        }
+
+        /* Ruby Glow Hover */
+        .img-frame:hover {
+            border-color: var(--ruby-glow);
+            box-shadow: 0 0 30px rgba(128, 0, 0, 0.6);
+            transform: scale(1.02);
+        }
+
+        .img-frame:hover img {
+            filter: grayscale(0%) sepia(0%);
+        }
+
+        .btn-gold {
+            margin-top: 30px;
+            padding: 12px 40px;
+            background: transparent;
+            border: 1px solid var(--gold-leaf);
+            color: var(--gold-leaf);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            transition: 0.4s;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-leaf);
+            color: var(--emerald-deep);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+
+        /* --- Mobile Optimization --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 2rem; }
+            .nav-marks, .progress-container { width: 80%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-animate" id="bg"></div>
+    <div id="bg-canvas"></div>
     <div id="flashlight"></div>
 
-    <div class="nav-container">
-        <div class="nav-progress" id="progress"></div>
-        <div class="nav-labels">
-            <span>01</span>
-            <span>02</span>
-            <span>03</span>
-            <span>04</span>
-            <span>05</span>
-            <span>06</span>
+    <header>
+        <div class="nav-marks">
+            <span>I</span><span>II</span><span>III</span><span>IV</span><span>V</span><span>VI</span>
         </div>
-    </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+    </header>
 
-    <section id="s1" class="active">
+    <section class="active">
         <h1>Claine</h1>
-        <p>A formal presentation of my digital journey and web development aspirations.</p>
+        <p>An Emerald & Gold digital anthology.</p>
     </section>
 
-    <section id="s2">
+    <section>
         <h2>About Me</h2>
-        <p>Dedicated to crafting elegant digital solutions. <br> <strong>Hobbies:</strong> Gaming & Literature.</p>
-        <p style="margin-top: 20px;">Focused on supporting family through technological excellence.</p>
+        <p>Blending the logic of web development with a passion for creative storytelling.</p>
+        <p style="color: var(--gold-leaf); margin-top: 15px; font-style: italic;">Hobbies: Gaming | Literature | Soundscapes</p>
     </section>
 
-    <section id="s3">
-        <div class="img-box"><img src="images/pic02.jpg" alt="Game"></div>
+    <section>
+        <div class="img-frame"><img src="images/pic02.jpg" alt="GDevelop"></div>
         <h2>GDevelop</h2>
-        <p>Interactive storytelling through game design.</p>
-        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="gold-btn">Explore Game</a>
+        <p>Interactive experiences built with logic and imagination.</p>
+        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="btn-gold">Launch Experience</a>
     </section>
 
-    <section id="s4">
-        <div class="img-box"><img src="images/pic03.jpg" alt="YT"></div>
+    <section>
+        <div class="img-frame"><img src="images/pic03.jpg" alt="YouTube"></div>
         <h2>YouTube</h2>
-        <p>Visual content creation and gaming highlights.</p>
-        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="gold-btn">View Channel</a>
+        <p>A visual gallery of gaming content and digital edits.</p>
+        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="btn-gold">Enter Channel</a>
     </section>
 
-    <section id="s5">
-        <div class="img-box"><img src="images/pic04.jpg" alt="Git"></div>
+    <section>
+        <div class="img-frame"><img src="images/pic04.jpg" alt="GitHub"></div>
         <h2>GitHub</h2>
-        <p>Open source contributions and code architecture.</p>
-        <a href="https://github.com/Clainesemania" target="_blank" class="gold-btn">Source Code</a>
+        <p>The technical foundation of my projects and codebases.</p>
+        <a href="https://github.com/Clainesemania" target="_blank" class="btn-gold">Review Code</a>
     </section>
 
-    <section id="s6">
-        <h2>Refining</h2>
-        <p>Currently improving skills in Frontend Architecture.</p>
-        <div style="color: var(--gold-muted); margin-top: 50px; letter-spacing: 5px;">EST. 2024</div>
+    <section>
+        <h2>Still Improving</h2>
+        <p>Mastery is a journey, not a destination. Evolution is constant.</p>
+        <div style="margin-top: 40px; color: var(--ruby-rich); letter-spacing: 8px;">PROGRESSION</div>
     </section>
 
     <script>
-        // --- 1. Background Animation Generator ---
-        const bg = document.getElementById('bg');
-        for (let i = 0; i < 15; i++) {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            const size = Math.random() * 100 + 50;
-            bubble.style.width = size + 'px';
-            bubble.style.height = size + 'px';
-            bubble.style.left = Math.random() * 100 + '%';
-            bubble.style.animationDelay = Math.random() * 10 + 's';
-            bubble.style.opacity = Math.random() * 0.05;
-            bg.appendChild(bubble);
+        // 1. Background Animation (Gold Bits)
+        const bg = document.getElementById('bg-canvas');
+        for (let i = 0; i < 25; i++) {
+            const bit = document.createElement('div');
+            bit.className = 'gold-bit';
+            const size = Math.random() * 3 + 1;
+            bit.style.width = size + 'px';
+            bit.style.height = size + 'px';
+            bit.style.left = Math.random() * 100 + '%';
+            bit.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            bit.style.animationDelay = (Math.random() * 10) + 's';
+            bg.appendChild(bit);
         }
 
-        // --- 2. Smooth "Chase" Flashlight Logic (Lerp) ---
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let ballX = mouseX;
-        let ballY = mouseY;
-        const speed = 0.08; // Lower = smoother/slower follow
+        // 2. Optimized Smooth Flashlight (Lerp)
+        let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
+        let currentX = targetX, currentY = targetY;
 
-        function animateFlashlight() {
-            // Linear Interpolation: Current position + (Target - Current) * speed
-            ballX += (mouseX - ballX) * speed;
-            ballY += (mouseY - ballY) * speed;
-
-            document.getElementById('flashlight').style.setProperty('--x', ballX + 'px');
-            document.getElementById('flashlight').style.setProperty('--y', ballY + 'px');
-            
-            requestAnimationFrame(animateFlashlight);
+        function smoothMove() {
+            currentX += (targetX - currentX) * 0.08;
+            currentY += (targetY - currentY) * 0.08;
+            document.getElementById('flashlight').style.setProperty('--x', currentX + 'px');
+            document.getElementById('flashlight').style.setProperty('--y', currentY + 'px');
+            requestAnimationFrame(smoothMove);
         }
-        animateFlashlight();
+        smoothMove();
 
-        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-        window.addEventListener('touchstart', e => { 
-            mouseX = e.touches[0].clientX; 
-            mouseY = e.touches[0].clientY; 
-        });
+        window.addEventListener('mousemove', e => { targetX = e.clientX; targetY = e.clientY; });
+        window.addEventListener('touchstart', e => { targetX = e.touches[0].clientX; targetY = e.touches[0].clientY; });
 
-        // --- 3. Section Navigation ---
+        // 3. Navigation Controls
         const sections = document.querySelectorAll('section');
-        const progressBar = document.getElementById('progress');
-        let currentStep = 0;
-        let isScrolling = false;
+        const bar = document.getElementById('bar');
+        let index = 0;
+        let isLocked = false;
 
-        function updateUI() {
-            sections.forEach((s, i) => {
-                s.classList.toggle('active', i === currentStep);
-            });
-            const progressHeight = ((currentStep) / (sections.length - 1)) * 100;
-            progressBar.style.height = progressHeight + '%';
+        function changeSection(dir) {
+            if (isLocked) return;
+            isLocked = true;
+            
+            sections[index].classList.remove('active');
+            if (dir === 'next') index = (index + 1) % sections.length;
+            else index = (index - 1 + sections.length) % sections.length;
+            
+            sections[index].classList.add('active');
+            bar.style.width = (index / (sections.length - 1) * 100) + '%';
+            
+            setTimeout(() => isLocked = false, 1000);
         }
 
-        window.addEventListener('wheel', (e) => {
-            if (isScrolling) return;
-            isScrolling = true;
-            
-            if (e.deltaY > 0 && currentStep < sections.length - 1) currentStep++;
-            else if (e.deltaY < 0 && currentStep > 0) currentStep--;
-            
-            updateUI();
-            setTimeout(() => { isScrolling = false; }, 800);
+        window.addEventListener('wheel', e => {
+            if (e.deltaY > 0) changeSection('next');
+            else changeSection('prev');
         });
 
-        // Mobile Tap to Advance
-        window.addEventListener('click', (e) => {
-            if(e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
-                currentStep = (currentStep + 1) % sections.length;
-                updateUI();
-            }
+        // Click to advance (if not clicking a link)
+        window.addEventListener('click', e => {
+            if (e.target.tagName !== 'A' && e.target.tagName !== 'SPAN') changeSection('next');
+        });
+
+        // Keyboard support
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSection('next');
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSection('prev');
         });
     </script>
 </body>
