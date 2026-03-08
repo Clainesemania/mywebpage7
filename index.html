@@ -13,9 +13,9 @@
         :root {
             --white-gold: #d4af37;
             --marble-white: #fdfdfd;
-            --glass: rgba(255, 255, 255, 0.35);
+            --glass: rgba(255, 255, 255, 0.4);
             --text-main: #1c1c1c;
-            --transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,11 +28,11 @@
             height: 100vh;
         }
 
-        /* --- Marble Grain Overlay --- */
+        /* --- Marble Texture Overlay --- */
         .marble-texture {
             position: fixed; inset: 0; pointer-events: none; z-index: 1;
-            opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w4.org/2000/svg'%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* --- Horizontal Snap Container --- */
@@ -50,7 +50,7 @@
         }
         .snap-container::-webkit-scrollbar { display: none; }
 
-        /* --- Individual Sections --- */
+        /* --- Sections Logic --- */
         section {
             flex: 0 0 100vw;
             height: 100vh;
@@ -61,130 +61,134 @@
             justify-content: center;
             padding: 0 10vw;
             opacity: 0;
-            filter: blur(10px);
-            transform: translateY(30px);
+            filter: blur(15px);
+            transform: scale(0.9);
             transition: var(--transition);
         }
 
-        /* Logic to hide/show parts only when viewing */
         section.is-active {
             opacity: 1;
             filter: blur(0);
-            transform: translateY(0);
+            transform: scale(1);
         }
 
-        /* --- High-Intensity Flashlight --- */
-        #flashlight {
-            position: fixed; inset: 0; pointer-events: none; z-index: 100;
-            background: radial-gradient(circle 500px at var(--x, 50%) var(--y, 50%), 
-                        rgba(212, 175, 55, 0.22) 0%, 
-                        transparent 75%);
+        /* --- Live Gold Slider --- */
+        .slider-wrapper {
+            position: fixed; bottom: 8vh; left: 50%; transform: translateX(-50%);
+            width: 300px; height: 40px; display: flex; align-items: center; z-index: 101;
         }
-
-        /* --- Progress Indicator --- */
-        .nav-container {
-            position: fixed; bottom: 5vh; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 20px; z-index: 101;
+        .slider-track {
+            width: 100%; height: 2px; background: rgba(0,0,0,0.05);
+            position: relative; cursor: pointer;
         }
-        .progress-track { width: 150px; height: 1px; background: rgba(0,0,0,0.1); position: relative; }
-        .progress-fill { position: absolute; height: 100%; background: var(--white-gold); width: 0%; transition: 0.4s ease; }
+        .slider-thumb {
+            position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
+            width: 60px; height: 4px; background: var(--white-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            transition: left 0.1s linear;
+        }
 
         h1, h2 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 6px; }
-        h1 { font-size: clamp(3rem, 15vw, 8rem); line-height: 0.9; }
-        h2 { font-size: clamp(1.2rem, 4vw, 2.2rem); color: var(--white-gold); margin-bottom: 24px; }
-        p { max-width: 480px; text-align: center; font-weight: 200; color: #555; letter-spacing: 1px; line-height: 1.8; }
+        h1 { font-size: clamp(3rem, 15vw, 8rem); margin-bottom: 20px; }
+        h2 { font-size: 1.8rem; color: var(--white-gold); margin-bottom: 15px; }
+        p { max-width: 480px; text-align: center; font-weight: 200; color: #666; line-height: 1.8; margin-bottom: 10px; }
+        
+        .link-text { 
+            font-size: 0.8rem; letter-spacing: 2px; text-decoration: none; 
+            color: var(--text-main); font-weight: 500; border-bottom: 1px solid var(--white-gold);
+        }
 
-        /* --- Premium Glassmorphism --- */
+        /* --- Glassmorphism Card --- */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(25px) saturate(160%);
             -webkit-backdrop-filter: blur(25px) saturate(160%);
-            padding: 20px;
+            padding: 15px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            outline: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 8px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.06), inset 0 0 20px rgba(255,255,255,0.2);
+            border-radius: 4px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.04);
+            margin-bottom: 2.5rem;
             transform: rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
             transition: transform 0.1s ease-out;
-            margin-bottom: 3rem;
         }
 
         .glass-card img {
-            width: 600px; max-width: 75vw; height: 380px; 
-            object-fit: cover; display: block; border-radius: 4px;
+            width: 550px; max-width: 75vw; height: 350px; 
+            object-fit: cover; display: block; border-radius: 2px;
         }
 
-        .accent-line { width: 40px; height: 1px; background: var(--white-gold); margin: 30px 0; }
+        .accent { width: 40px; height: 1px; background: var(--white-gold); margin: 20px 0; }
     </style>
 </head>
 <body>
 
     <div class="marble-texture"></div>
-    <div id="flashlight"></div>
     
-    <div class="nav-container">
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="slider-wrapper" id="sliderWrapper">
+        <div class="slider-track" id="sliderTrack">
+            <div class="slider-thumb" id="sliderThumb"></div>
+        </div>
     </div>
 
     <main class="snap-container" id="container">
         
         <section class="is-active">
             <h1>Claine</h1>
-            <div class="accent-line"></div>
-            <p>A Digital Experience optimized for performance and aesthetic luxury.</p>
+            <div class="accent"></div>
+            <p>A minimalist website. Scroll horizontally.</p>
         </section>
 
         <section>
             <div class="glass-card">
-                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200" alt="GDevelop">
+                <img src="pic02.jpg" alt="GDevelop Project">
             </div>
-            <h2>GDevelop Engine</h2>
-            <p>Crafting interactive logic within a minimalist framework.</p>
+            <h2>GDevelop</h2>
+            <p>A game, made from a template.</p>
+            <a href="#" class="link-text">PLAY</a>
         </section>
 
         <section>
             <div class="glass-card">
-                <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=1200" alt="Design">
+                <img src="pic03.jpg" alt="YouTube Content">
             </div>
-            <h2>Gaming & Design</h2>
-            <p>Documenting the intersection of visual evolution and play.</p>
+            <h2>YouTube</h2>Simple content.</p>
+            <a href="https://www.youtube.com/@hotdogpandesal-gaming" target="_blank" class="link-text">VISIT</a>
         </section>
 
         <section>
-            <h2>The Source</h2>
-            <div class="accent-line"></div>
-            <p>Everything you see is open-source and optimized for GitHub Pages.</p>
-            <p style="font-weight: 500; margin-top: 20px; color: var(--white-gold);">github.com/clainesemania</p>
+            <div class="glass-card">
+                <img src="pic04.jpg" alt="GitHub Repository">
+            </div>
+            <h2>GitHub</h2>
+            <p>Code for website.</p>
+            <a href="https://github.com/Clainesemania" target="_blank" class="link-text">EXPLORE REPOS</a>
         </section>
 
     </main>
 
     <script>
         const container = document.getElementById('container');
-        const flashlight = document.getElementById('flashlight');
-        const progressFill = document.getElementById('progressFill');
         const sections = document.querySelectorAll('section');
+        const thumb = document.getElementById('sliderThumb');
+        const track = document.getElementById('sliderTrack');
 
-        // 1. Mouse Interaction (Flashlight & Tilt)
+        // 1. Mouse Interaction (3D Parallax Tilt)
         document.addEventListener('mousemove', e => {
             const { clientX: x, clientY: y } = e;
-            flashlight.style.setProperty('--x', `${x}px`);
-            flashlight.style.setProperty('--y', `${y}px`);
-
             const activeSection = document.querySelector('section.is-active');
             if (activeSection) {
                 const card = activeSection.querySelector('.glass-card');
                 if (card) {
                     const rect = card.getBoundingClientRect();
-                    const rx = (x - (rect.left + rect.width / 2)) / 45;
-                    const ry = ((rect.top + rect.height / 2) - y) / 45;
+                    const rx = (x - (rect.left + rect.width / 2)) / 50;
+                    const ry = ((rect.top + rect.height / 2) - y) / 50;
                     card.style.setProperty('--rx', `${rx}deg`);
                     card.style.setProperty('--ry', `${ry}deg`);
                 }
             }
         });
 
-        // 2. Smooth Scroll Reveal (Intersection Observer)
+        // 2. Intersection Observer (Smooth Visibility Reveal)
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -197,17 +201,24 @@
 
         sections.forEach(sec => observer.observe(sec));
 
-        // 3. Progress Tracking
+        // 3. Live Slider Navigation Logic
         container.addEventListener('scroll', () => {
             const scrollPercent = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
-            progressFill.style.width = `${scrollPercent}%`;
+            thumb.style.left = `${scrollPercent}%`;
         });
 
-        // 4. Horizontal Mouse Wheel Conversion
+        // Click on track to navigate
+        track.addEventListener('click', (e) => {
+            const rect = track.getBoundingClientRect();
+            const clickPos = (e.clientX - rect.left) / rect.width;
+            container.scrollLeft = clickPos * (container.scrollWidth - container.clientWidth);
+        });
+
+        // 4. Horizontal Mouse Wheel Hijack
         container.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
-                container.scrollLeft += e.deltaY * 1.5; // Smoother multiplier
+                container.scrollLeft += e.deltaY * 1.2;
             }
         });
     </script>
