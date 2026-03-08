@@ -3,197 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claine | Portfolio</title>
+    <title>Claine | Modern Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --navy: #1b262c;     /* Deep navy grey */
-            --gold: #c5a059;     /* White gold metallic */
-            --marble: #f4f4f4;   /* Soft off-white marble */
-            --accent: #394a51;   /* Muted navy shadow */
+            --white-gold: #d4af37; /* Refined Gold */
+            --marble-bg: #f9f9f9;  /* Bright Modern White */
+            --soft-shadow: rgba(212, 175, 55, 0.2);
+            --text-dark: #2d2d2d;
             --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { 
-            background-color: var(--navy); 
-            color: var(--marble); 
+            background-color: var(--marble-bg); 
+            color: var(--text-dark); 
             font-family: 'Montserrat', sans-serif; 
-            overflow: hidden; 
-            height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* --- Animated Background Waves --- */
-        .bg-animate {
-            position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(135deg, var(--navy) 0%, var(--accent) 100%);
-            overflow: hidden;
-        }
-        .wave {
-            position: absolute; bottom: -10%; left: -10%; width: 120%; height: 50%;
-            background: rgba(197, 160, 89, 0.03); border-radius: 40%;
-            animation: drift 20s infinite linear;
-        }
-        .wave:nth-child(2) { animation-duration: 25s; opacity: 0.02; bottom: -15%; }
-        @keyframes drift { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* --- Vertical Progress Slider --- */
-        .progress-container {
-            position: fixed; right: 40px; top: 50%; transform: translateY(-50%);
-            height: 200px; width: 2px; background: rgba(255,255,255,0.1); z-index: 100;
-        }
-        .progress-thumb {
-            position: absolute; top: 0; width: 100%; height: 0%;
-            background: var(--gold); box-shadow: 0 0 15px var(--gold);
-            transition: height var(--ease);
-        }
-
-        /* --- Parallax Flashlight --- */
+        /* --- Brighter Lighting Effect --- */
         #flashlight {
-            position: fixed; inset: 0; pointer-events: none; z-index: 99;
-            background: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), 
-                        rgba(197, 160, 89, 0.07) 0%, transparent 100%);
+            position: fixed; 
+            inset: 0; 
+            pointer-events: none; 
+            z-index: 99;
+            /* Brighter white-gold glow */
+            background: radial-gradient(circle 400px at var(--x, 50%) var(--y, 50%), 
+                        rgba(212, 175, 55, 0.15) 0%, 
+                        transparent 80%);
         }
 
-        /* --- Sections --- */
+        /* --- Modern Top Progress Bar --- */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; width: 0%; height: 4px;
+            background: var(--white-gold);
+            z-index: 1000;
+            box-shadow: 0 0 10px var(--white-gold);
+        }
+
+        /* --- Layout Structure --- */
         section {
-            position: absolute; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            opacity: 0; visibility: hidden; padding: 2rem;
-            transform: translate3d(0, 50px, 0); transition: all 1s var(--ease);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10vh 2rem;
+            position: relative;
         }
-        section.active { opacity: 1; visibility: visible; transform: translate3d(0,0,0); }
 
-        h1, h2 { font-family: 'Playfair Display', serif; color: var(--gold); letter-spacing: 4px; }
-        h1 { font-size: clamp(3rem, 10vw, 5.5rem); text-transform: uppercase; }
-        p { max-width: 500px; color: #a1a1a1; line-height: 1.8; margin-top: 1rem; }
+        h1, h2 { 
+            font-family: 'Playfair Display', serif; 
+            color: var(--text-dark); 
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
-        /* --- Parallax Project Card --- */
+        h1 { font-size: clamp(3.5rem, 12vw, 6rem); margin-bottom: 1rem; }
+        h2 { font-size: 2.5rem; color: var(--white-gold); }
+
+        p { 
+            max-width: 600px; 
+            text-align: center;
+            font-weight: 300;
+            color: #666;
+            margin-top: 1.5rem;
+        }
+
+        /* --- Enhanced Parallax Card --- */
         .parallax-wrapper {
-            position: relative; perspective: 1000px; margin-bottom: 2rem;
-        }
-        .card {
-            background: var(--marble); padding: 10px; border: 1px solid var(--gold);
-            transform: rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
-            transition: transform 0.1s linear;
-        }
-        .card img {
-            width: 350px; height: 200px; object-fit: cover; display: block;
-            filter: sepia(20%) contrast(110%);
+            perspective: 1500px;
+            margin: 3rem 0;
         }
 
-        .gold-line {
-            width: 50px; height: 2px; background: var(--gold); margin-top: 40px;
-            box-shadow: 0 0 10px var(--gold);
+        .card {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transform: rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
+            transition: transform 0.1s ease-out;
+            will-change: transform;
         }
+
+        .card img {
+            width: 450px; 
+            max-width: 80vw;
+            height: 300px; 
+            object-fit: cover; 
+            display: block;
+            filter: grayscale(20%) brightness(1.05);
+            transition: filter 0.5s var(--ease);
+        }
+
+        .card:hover img { filter: grayscale(0%); }
+
+        .gold-accent-line {
+            width: 80px; height: 3px; background: var(--white-gold);
+            margin: 2rem 0;
+        }
+
+        /* --- Content sections specific styles --- */
+        .hero { background: radial-gradient(circle at center, #ffffff 0%, #f1f1f1 100%); }
+
     </style>
 </head>
 <body>
 
-    <div class="bg-animate"><div class="wave"></div><div class="wave"></div></div>
     <div id="flashlight"></div>
+    <div class="progress-bar" id="progressBar"></div>
 
-    <div class="progress-container">
-        <div class="progress-thumb" id="progressThumb"></div>
-    </div>
-
-    <section class="active">
+    <section class="hero">
         <h1>Claine</h1>
-        <p>A Minimalist Portfolio in Navy & Gold</p>
-        <div class="gold-line"></div>
+        <div class="gold-accent-line"></div>
+        <p>Digital Experiences curated in White Gold & Minimalist Forms.</p>
     </section>
 
     <section>
         <h2>The Architect</h2>
-        <p>Student of the Web Development Craft. <br> Pursuing a balance of logic and luxury design.</p>
+        <p>Blending technical precision with high-end aesthetic values. Every pixel serves a purpose, every interaction tells a story.</p>
     </section>
 
     <section>
         <div class="parallax-wrapper">
-            <div class="card"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800" alt="Interior"></div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&q=80&w=800" alt="Minimal Lamp">
+            </div>
         </div>
         <h2>GDevelop</h2>
-        <p>Interactive projects built with GDevelop engine.</p>
+        <p>Experimental game logic wrapped in premium interfaces.</p>
     </section>
 
     <section>
         <div class="parallax-wrapper">
-            <div class="card"><img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=800" alt="Marble"></div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Architecture">
+            </div>
         </div>
         <h2>YouTube</h2>
-        <p>Documenting gaming content and design evolution.</p>
+        <p>A visual diary of design evolution and gaming highlights.</p>
     </section>
 
     <section>
         <div class="parallax-wrapper">
-            <div class="card"><img src="https://images.unsplash.com/photo-1513519247388-193ad51c991b?auto=format&fit=crop&q=80&w=800" alt="Navy Gold"></div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1507537362848-9c7e70b715c1?auto=format&fit=crop&q=80&w=800" alt="Studio">
+            </div>
         </div>
         <h2>GitHub</h2>
-        <p>Source code for experimental web projects.</p>
+        <p>The clean, documented source of my creative engineering.</p>
     </section>
 
     <section>
-        <h2>Continuous</h2>
-        <p>Still Improving. Still Evolving.</p>
-        <div class="gold-line"></div>
+        <h2>Evolve</h2>
+        <div class="gold-accent-line"></div>
+        <p>© 2026 Claine. Still Improving.</p>
     </section>
 
     <script>
-        // 1. Mouse Follow (Flashlight & Card Parallax)
         const flashlight = document.getElementById('flashlight');
         const cards = document.querySelectorAll('.card');
+        const progressBar = document.getElementById('progressBar');
 
+        // 1. Mouse Follow & Parallax Interaction
         document.addEventListener('mousemove', e => {
             const x = e.clientX;
             const y = e.clientY;
+            
             flashlight.style.setProperty('--x', x + 'px');
             flashlight.style.setProperty('--y', y + 'px');
 
-            // Card Tilt Effect
             cards.forEach(card => {
                 const rect = card.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const rx = (x - centerX) / 20;
-                const ry = (centerY - y) / 20;
-                card.style.setProperty('--rx', rx + 'deg');
-                card.style.setProperty('--ry', ry + 'deg');
+                
+                // Only animate if the card is roughly in the viewport
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    // Sensitivity - lower number = more tilt
+                    const rx = (x - centerX) / 25;
+                    const ry = (centerY - y) / 25;
+                    
+                    card.style.setProperty('--rx', `${rx}deg`);
+                    card.style.setProperty('--ry', `${ry}deg`);
+                }
             });
         });
 
-        // 2. Section Navigation & Slider Progress
-        const sections = document.querySelectorAll('section');
-        const thumb = document.getElementById('progressThumb');
-        let index = 0;
-        let isLocked = false;
-
-        function update(newIndex) {
-            if (isLocked || newIndex < 0 || newIndex >= sections.length) return;
-            isLocked = true;
-            
-            sections[index].classList.remove('active');
-            index = newIndex;
-            sections[index].classList.add('active');
-            
-            // Update Slider Height
-            const progress = ((index + 1) / sections.length) * 100;
-            thumb.style.height = progress + '%';
-            
-            setTimeout(() => isLocked = false, 1000);
-        }
-
-        // Scroll Input
-        window.addEventListener('wheel', e => {
-            if (e.deltaY > 0) update(index + 1);
-            else update(index - 1);
-        });
-
-        // Click to advance
-        window.addEventListener('click', e => {
-            if (e.target.tagName !== 'A') update((index + 1) % sections.length);
+        // 2. Scroll Progress Tracker
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
         });
     </script>
 </body>
