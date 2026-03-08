@@ -28,14 +28,29 @@
             height: 100vh;
         }
 
-        /* --- Marble Texture Overlay --- */
+        /* --- Animated Background --- */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(120deg, #ffffff 0%, #f4f4f4 50%, #ffffff 100%);
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .marble-texture {
             position: fixed; inset: 0; pointer-events: none; z-index: 1;
             opacity: 0.05;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* --- Horizontal Snap Container --- */
+        /* --- Layout --- */
         .snap-container {
             display: flex;
             overflow-x: auto;
@@ -50,7 +65,6 @@
         }
         .snap-container::-webkit-scrollbar { display: none; }
 
-        /* --- Sections Visibility Logic --- */
         section {
             flex: 0 0 100vw;
             height: 100vh;
@@ -72,7 +86,7 @@
             transform: scale(1);
         }
 
-        /* --- Live Gold Scrubber --- */
+        /* --- Live Scrubber --- */
         .slider-wrapper {
             position: fixed; bottom: 8vh; left: 50%; transform: translateX(-50%);
             width: 300px; height: 30px; display: flex; align-items: center; z-index: 101;
@@ -85,9 +99,9 @@
             position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
             width: 50px; height: 3px; background: var(--white-gold);
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            transition: left 0.1s linear;
         }
 
+        /* --- Typography --- */
         h1, h2 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 5px; }
         h1 { font-size: clamp(3rem, 12vw, 7rem); margin-bottom: 20px; }
         h2 { font-size: 1.8rem; color: var(--white-gold); margin-bottom: 15px; }
@@ -96,11 +110,9 @@
         .nav-link { 
             margin-top: 20px; font-size: 0.75rem; letter-spacing: 2px; text-decoration: none; 
             color: var(--text-main); font-weight: 500; border-bottom: 1px solid var(--white-gold);
-            transition: opacity 0.3s;
         }
-        .nav-link:hover { opacity: 0.6; }
 
-        /* --- Premium Glass Card --- */
+        /* --- Glass Cards --- */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(20px) saturate(160%);
@@ -124,6 +136,7 @@
 </head>
 <body>
 
+    <div class="bg-gradient"></div>
     <div class="marble-texture"></div>
     
     <div class="slider-wrapper" id="sliderWrapper">
@@ -142,7 +155,7 @@
 
         <section>
             <div class="glass-card">
-                <img src="pic02.jpg" alt="GDevelop Showcase">
+                <img src="images/pic02.jpg" alt="GDevelop Showcase">
             </div>
             <h2>GDevelop</h2>
             <p>Exploring game mechanics through visual scripting and logical architecture.</p>
@@ -150,7 +163,7 @@
 
         <section>
             <div class="glass-card">
-                <img src="pic03.jpg" alt="YouTube Showcase">
+                <img src="images/pic03.jpg" alt="YouTube Showcase">
             </div>
             <h2>YouTube</h2>
             <p>Documenting gaming highlights and the creative process on @hotdogpandesal-gaming.</p>
@@ -159,7 +172,7 @@
 
         <section>
             <div class="glass-card">
-                <img src="pic04.jpg" alt="GitHub Showcase">
+                <img src="images/pic04.jpg" alt="GitHub Showcase">
             </div>
             <h2>GitHub</h2>
             <p>Source code and documentation for web projects and experiments.</p>
@@ -181,7 +194,7 @@
         const thumb = document.getElementById('sliderThumb');
         const track = document.getElementById('sliderTrack');
 
-        // 1. Interactive 3D Parallax on Active Card
+        // 1. Mouse Interaction
         document.addEventListener('mousemove', e => {
             const { clientX: x, clientY: y } = e;
             const activeSec = document.querySelector('section.is-active');
@@ -197,17 +210,16 @@
             }
         });
 
-        // 2. Observer for Smooth Reveal Transitions
+        // 2. Reveal Logic
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('is-active');
                 else entry.target.classList.remove('is-active');
             });
         }, { threshold: 0.5 });
-
         sections.forEach(sec => observer.observe(sec));
 
-        // 3. Live Slider Navigation
+        // 3. Slider Sync
         container.addEventListener('scroll', () => {
             const scrollPercent = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
             thumb.style.left = `${scrollPercent}%`;
@@ -219,7 +231,7 @@
             container.scrollLeft = clickPos * (container.scrollWidth - container.clientWidth);
         });
 
-        // 4. Horizontal Scroll Hijack
+        // 4. Scroll Conversion
         container.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
