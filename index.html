@@ -15,7 +15,7 @@
             --marble-white: #fdfdfd;
             --glass: rgba(255, 255, 255, 0.4);
             --text-main: #1c1c1c;
-            --transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,7 +50,7 @@
         }
         .snap-container::-webkit-scrollbar { display: none; }
 
-        /* --- Sections Logic --- */
+        /* --- Sections Visibility Logic --- */
         section {
             flex: 0 0 100vw;
             height: 100vh;
@@ -61,8 +61,8 @@
             justify-content: center;
             padding: 0 10vw;
             opacity: 0;
-            filter: blur(15px);
-            transform: scale(0.9);
+            filter: blur(20px);
+            transform: scale(0.85);
             transition: var(--transition);
         }
 
@@ -72,52 +72,54 @@
             transform: scale(1);
         }
 
-        /* --- Live Gold Slider --- */
+        /* --- Live Gold Scrubber --- */
         .slider-wrapper {
             position: fixed; bottom: 8vh; left: 50%; transform: translateX(-50%);
-            width: 300px; height: 40px; display: flex; align-items: center; z-index: 101;
+            width: 300px; height: 30px; display: flex; align-items: center; z-index: 101;
         }
         .slider-track {
-            width: 100%; height: 2px; background: rgba(0,0,0,0.05);
+            width: 100%; height: 2px; background: rgba(0,0,0,0.08);
             position: relative; cursor: pointer;
         }
         .slider-thumb {
             position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
-            width: 60px; height: 4px; background: var(--white-gold);
+            width: 50px; height: 3px; background: var(--white-gold);
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
             transition: left 0.1s linear;
         }
 
-        h1, h2 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 6px; }
-        h1 { font-size: clamp(3rem, 15vw, 8rem); margin-bottom: 20px; }
+        h1, h2 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 5px; }
+        h1 { font-size: clamp(3rem, 12vw, 7rem); margin-bottom: 20px; }
         h2 { font-size: 1.8rem; color: var(--white-gold); margin-bottom: 15px; }
-        p { max-width: 480px; text-align: center; font-weight: 200; color: #666; line-height: 1.8; margin-bottom: 10px; }
+        p { max-width: 500px; text-align: center; font-weight: 300; color: #666; line-height: 1.8; }
         
-        .link-text { 
-            font-size: 0.8rem; letter-spacing: 2px; text-decoration: none; 
+        .nav-link { 
+            margin-top: 20px; font-size: 0.75rem; letter-spacing: 2px; text-decoration: none; 
             color: var(--text-main); font-weight: 500; border-bottom: 1px solid var(--white-gold);
+            transition: opacity 0.3s;
         }
+        .nav-link:hover { opacity: 0.6; }
 
-        /* --- Glassmorphism Card --- */
+        /* --- Premium Glass Card --- */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(25px) saturate(160%);
-            -webkit-backdrop-filter: blur(25px) saturate(160%);
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 4px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.04);
-            margin-bottom: 2.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
             transform: rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
-            transition: transform 0.1s ease-out;
+            transition: transform 0.15s ease-out;
         }
 
         .glass-card img {
-            width: 550px; max-width: 75vw; height: 350px; 
+            width: 580px; max-width: 80vw; height: 340px; 
             object-fit: cover; display: block; border-radius: 2px;
         }
 
-        .accent { width: 40px; height: 1px; background: var(--white-gold); margin: 20px 0; }
+        .gold-accent { width: 50px; height: 1px; background: var(--white-gold); margin: 25px 0; }
     </style>
 </head>
 <body>
@@ -134,34 +136,41 @@
         
         <section class="is-active">
             <h1>Claine</h1>
-            <div class="accent"></div>
-            <p>A minimalist website. Scroll horizontally.</p>
+            <div class="gold-accent"></div>
+            <p>Minimalist Design & Web Development</p>
         </section>
 
         <section>
             <div class="glass-card">
-                <img src="pic02.jpg" alt="GDevelop Project">
+                <img src="pic02.jpg" alt="GDevelop Showcase">
             </div>
             <h2>GDevelop</h2>
-            <p>A game, made from a template.</p>
-            <a href="#" class="link-text">PLAY</a>
+            <p>Exploring game mechanics through visual scripting and logical architecture.</p>
         </section>
 
         <section>
             <div class="glass-card">
-                <img src="pic03.jpg" alt="YouTube Content">
+                <img src="pic03.jpg" alt="YouTube Showcase">
             </div>
-            <h2>YouTube</h2>Simple content.</p>
-            <a href="https://www.youtube.com/@hotdogpandesal-gaming" target="_blank" class="link-text">VISIT</a>
+            <h2>YouTube</h2>
+            <p>Documenting gaming highlights and the creative process on @hotdogpandesal-gaming.</p>
+            <a href="https://www.youtube.com/@hotdogpandesal-gaming" target="_blank" class="nav-link">VIEW CHANNEL</a>
         </section>
 
         <section>
             <div class="glass-card">
-                <img src="pic04.jpg" alt="GitHub Repository">
+                <img src="pic04.jpg" alt="GitHub Showcase">
             </div>
             <h2>GitHub</h2>
-            <p>Code for website.</p>
-            <a href="https://github.com/Clainesemania" target="_blank" class="link-text">EXPLORE REPOS</a>
+            <p>Source code and documentation for web projects and experiments.</p>
+            <a href="https://github.com/Clainesemania" target="_blank" class="nav-link">EXPLORE REPOS</a>
+        </section>
+
+        <section>
+            <h2>Still Improving</h2>
+            <div class="gold-accent"></div>
+            <p>Constantly refining the balance between code and aesthetic. Stay tuned for future evolutions.</p>
+            <p style="margin-top: 40px; font-size: 0.8rem; opacity: 0.4;">© 2026 Claine</p>
         </section>
 
     </main>
@@ -172,12 +181,12 @@
         const thumb = document.getElementById('sliderThumb');
         const track = document.getElementById('sliderTrack');
 
-        // 1. Mouse Interaction (3D Parallax Tilt)
+        // 1. Interactive 3D Parallax on Active Card
         document.addEventListener('mousemove', e => {
             const { clientX: x, clientY: y } = e;
-            const activeSection = document.querySelector('section.is-active');
-            if (activeSection) {
-                const card = activeSection.querySelector('.glass-card');
+            const activeSec = document.querySelector('section.is-active');
+            if (activeSec) {
+                const card = activeSec.querySelector('.glass-card');
                 if (card) {
                     const rect = card.getBoundingClientRect();
                     const rx = (x - (rect.left + rect.width / 2)) / 50;
@@ -188,37 +197,33 @@
             }
         });
 
-        // 2. Intersection Observer (Smooth Visibility Reveal)
+        // 2. Observer for Smooth Reveal Transitions
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-active');
-                } else {
-                    entry.target.classList.remove('is-active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('is-active');
+                else entry.target.classList.remove('is-active');
             });
         }, { threshold: 0.5 });
 
         sections.forEach(sec => observer.observe(sec));
 
-        // 3. Live Slider Navigation Logic
+        // 3. Live Slider Navigation
         container.addEventListener('scroll', () => {
             const scrollPercent = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
             thumb.style.left = `${scrollPercent}%`;
         });
 
-        // Click on track to navigate
         track.addEventListener('click', (e) => {
             const rect = track.getBoundingClientRect();
             const clickPos = (e.clientX - rect.left) / rect.width;
             container.scrollLeft = clickPos * (container.scrollWidth - container.clientWidth);
         });
 
-        // 4. Horizontal Mouse Wheel Hijack
+        // 4. Horizontal Scroll Hijack
         container.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
-                container.scrollLeft += e.deltaY * 1.2;
+                container.scrollLeft += e.deltaY * 1.5;
             }
         });
     </script>
