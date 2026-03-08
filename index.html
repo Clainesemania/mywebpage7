@@ -6,314 +6,225 @@
     <title>Claine | Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --emerald-deep: #022c22;
-            --ruby-rich: #800000;
-            --ruby-glow: #ff3131;
-            --gold-leaf: #fbbf24;
-            --gold-muted: #b45309;
-            --text-light: #fef3c7;
-            --ease-elegant: cubic-bezier(0.65, 0, 0.35, 1);
+            --black: #050505;
+            --maroon: #4a0404;
+            --maroon-glow: #800000;
+            --gold: #d4af37;
+            --gold-bloom: rgba(212, 175, 55, 0.4);
+            --transition: 0.85s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* --- Reset & Base --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--emerald-deep);
-            color: var(--text-light);
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
+        body { 
+            background: var(--black); 
+            color: #e5e5e5; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
             height: 100vh;
             cursor: crosshair;
         }
 
-        /* --- Background Particles (Optimized) --- */
-        #bg-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at bottom left, var(--ruby-rich), transparent 50%);
+        /* --- Glimmer Preloader --- */
+        #loader {
+            position: fixed; inset: 0; background: var(--black); z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
+        }
+        .gem {
+            width: 45px; height: 45px; border: 1.5px solid var(--gold);
+            transform: rotate(45deg); animation: gemPulse 2s infinite ease-in-out;
+            box-shadow: 0 0 25px var(--gold-bloom);
+            position: relative;
+        }
+        .gem::after {
+            content: ''; position: absolute; inset: 5px; border: 1px solid var(--maroon);
+        }
+        @keyframes gemPulse { 
+            0%, 100% { transform: rotate(45deg) scale(1); opacity: 0.4; } 
+            50% { transform: rotate(225deg) scale(1.1); opacity: 1; } 
+        }
+
+        /* --- Realistic Bloom Lighting --- */
+        .lighting-fx {
+            position: fixed; inset: 0; pointer-events: none; z-index: 1;
+            background: 
+                radial-gradient(circle at 100% 0%, var(--maroon-glow), transparent 60%),
+                radial-gradient(circle at 0% 100%, #1a0202, transparent 50%);
             opacity: 0.5;
+            mix-blend-mode: screen;
         }
-
-        .gold-bit {
-            position: absolute;
-            background: var(--gold-leaf);
-            border-radius: 50%;
-            opacity: 0.3;
-            filter: blur(1px);
-            animation: float-up 20s infinite linear;
-        }
-
-        @keyframes float-up {
-            0% { transform: translateY(110vh) translateX(0); }
-            100% { transform: translateY(-10vh) translateX(50px); }
-        }
-
-        /* --- Liquid Flashlight --- */
+        
         #flashlight {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
             background: radial-gradient(
-                circle 220px at var(--x, 50%) var(--y, 50%), 
-                rgba(128, 0, 0, 0.2) 0%, 
-                rgba(251, 191, 36, 0.1) 60%, 
+                circle 250px at var(--x, 50%) var(--y, 50%), 
+                rgba(212, 175, 55, 0.08) 0%, 
                 transparent 100%
             );
-            z-index: 9999;
-            will-change: auto;
+            will-change: transform;
         }
 
-        /* --- Horizontal Top Nav --- */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 30px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 100;
-            background: linear-gradient(to bottom, var(--emerald-deep) 40%, transparent);
+        /* --- Top Slider Navigation --- */
+        nav {
+            position: fixed; top: 0; width: 100%; height: 100px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; background: linear-gradient(to bottom, var(--black) 30%, transparent);
         }
+        .nav-labels { width: 45%; display: flex; justify-content: space-between; color: var(--gold); font-family: 'Playfair Display', serif; font-size: 0.75rem; letter-spacing: 5px; margin-bottom: 12px; }
+        .nav-track { width: 45%; height: 1px; background: rgba(212, 175, 55, 0.1); position: relative; }
+        .nav-bar { position: absolute; height: 100%; width: 0%; background: var(--gold); box-shadow: 0 0 20px var(--gold); transition: width var(--transition); }
 
-        .nav-marks {
-            width: 50%;
-            display: flex;
-            justify-content: space-between;
-            font-family: 'Playfair Display', serif;
-            color: var(--gold-leaf);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            letter-spacing: 4px;
-        }
-
-        .progress-container {
-            width: 50%;
-            height: 1px;
-            background: rgba(251, 191, 36, 0.2);
-            position: relative;
-        }
-
-        .progress-bar {
-            position: absolute;
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, var(--ruby-rich), var(--gold-leaf));
-            box-shadow: 0 0 10px var(--gold-leaf);
-            transition: width 0.8s var(--ease-elegant);
-        }
-
-        /* --- Section Logic --- */
+        /* --- Section Management --- */
         section {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px) scale(0.98);
-            transition: all 0.9s var(--ease-elegant);
+            position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 2.5rem; opacity: 0; visibility: hidden;
+            transform: translate3d(0, 40px, 0); transition: all var(--transition);
         }
+        section.active { opacity: 1; visibility: visible; transform: translate3d(0,0,0); }
 
-        section.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
+        h1, h2 { font-family: 'Playfair Display', serif; color: var(--gold); text-transform: uppercase; letter-spacing: 6px; text-shadow: 0 0 20px var(--gold-bloom); }
+        h1 { font-size: clamp(3.5rem, 12vw, 6rem); margin-bottom: 15px; }
+        p { max-width: 550px; color: #888; line-height: 2; font-weight: 300; letter-spacing: 1px; }
+
+        /* --- Bloom Project Cards --- */
+        .card-frame {
+            border: 1px solid rgba(212, 175, 55, 0.2); padding: 15px; background: rgba(74, 4, 4, 0.1);
+            margin-bottom: 30px; transition: 0.6s var(--transition); position: relative;
         }
-
-        /* --- Typography & Elements --- */
-        h1, h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--gold-leaf);
-            text-transform: capitalize;
+        .card-frame img { 
+            width: 350px; height: 200px; object-fit: cover; display: block; 
+            filter: grayscale(100%) brightness(40%) contrast(110%); transition: 0.7s var(--transition); 
         }
-
-        h1 { font-size: 5rem; letter-spacing: -2px; }
-        h2 { font-size: 2.8rem; margin-bottom: 15px; }
-        p { max-width: 550px; line-height: 1.8; color: #a1a1aa; font-weight: 300; }
-
-        .img-frame {
-            position: relative;
-            padding: 10px;
-            border: 1px solid var(--gold-muted);
-            background: rgba(0,0,0,0.3);
-            margin-bottom: 25px;
-            transition: 0.5s;
+        .card-frame:hover { 
+            border-color: var(--gold); 
+            box-shadow: 0 0 50px rgba(128, 0, 0, 0.4); 
+            transform: scale(1.03) translate3d(0,-5px,0); 
         }
+        .card-frame:hover img { filter: grayscale(0%) brightness(100%) contrast(100%); }
 
-        .img-frame img {
-            width: 320px;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-            filter: grayscale(40%) sepia(20%);
-            transition: 0.5s;
-        }
-
-        /* Ruby Glow Hover */
-        .img-frame:hover {
-            border-color: var(--ruby-glow);
-            box-shadow: 0 0 30px rgba(128, 0, 0, 0.6);
-            transform: scale(1.02);
-        }
-
-        .img-frame:hover img {
-            filter: grayscale(0%) sepia(0%);
-        }
-
-        .btn-gold {
-            margin-top: 30px;
-            padding: 12px 40px;
+        .gold-btn {
+            margin-top: 35px; padding: 14px 50px; border: 1px solid var(--gold); color: var(--gold);
+            text-decoration: none; font-size: 0.65rem; letter-spacing: 6px; transition: 0.4s;
             background: transparent;
-            border: 1px solid var(--gold-leaf);
-            color: var(--gold-leaf);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            transition: 0.4s;
         }
+        .gold-btn:hover { background: var(--gold); color: var(--black); box-shadow: 0 0 35px var(--gold-bloom); }
 
-        .btn-gold:hover {
-            background: var(--gold-leaf);
-            color: var(--emerald-deep);
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        /* Ambient Micro-Dust */
+        .spark {
+            position: absolute; width: 1px; height: 1px; background: var(--gold); opacity: 0.2;
+            animation: rise 20s infinite linear; pointer-events: none;
         }
+        @keyframes rise { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
 
-        /* --- Mobile Optimization --- */
-        @media (max-width: 768px) {
-            h1 { font-size: 3rem; }
-            h2 { font-size: 2rem; }
-            .nav-marks, .progress-container { width: 80%; }
-        }
+        @media (max-width: 768px) { .nav-labels, .nav-track { width: 85%; } h1 { font-size: 3rem; } .card-frame img { width: 280px; height: 160px; } }
     </style>
 </head>
 <body>
 
-    <div id="bg-canvas"></div>
+    <div id="loader">
+        <div class="gem"></div>
+        <p style="margin-top:25px; font-size: 0.6rem; letter-spacing: 6px; color: var(--gold); opacity: 0.7;">REFINING INTERFACE</p>
+    </div>
+
+    <div class="lighting-fx"></div>
     <div id="flashlight"></div>
 
-    <header>
-        <div class="nav-marks">
-            <span>I</span><span>II</span><span>III</span><span>IV</span><span>V</span><span>VI</span>
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="bar"></div>
-        </div>
-    </header>
+    <nav>
+        <div class="nav-labels"><span>I</span><span>II</span><span>III</span><span>IV</span><span>V</span><span>VI</span></div>
+        <div class="nav-track"><div class="nav-bar" id="navBar"></div></div>
+    </nav>
 
     <section class="active">
         <h1>Claine</h1>
-        <p>An Emerald & Gold digital anthology.</p>
+        <p>A Cinematic Portfolio Optimized for the Modern Web.</p>
     </section>
 
     <section>
-        <h2>About Me</h2>
-        <p>Blending the logic of web development with a passion for creative storytelling.</p>
-        <p style="color: var(--gold-leaf); margin-top: 15px; font-style: italic;">Hobbies: Gaming | Literature | Soundscapes</p>
+        <h2>The Vision</h2>
+        <p>Merging technical architecture with high-fidelity design aesthetics.</p>
+        <p style="color: var(--gold); font-size: 0.75rem; margin-top: 25px; letter-spacing: 3px;">STRATEGY | DESIGN | DEVELOPMENT</p>
     </section>
 
     <section>
-        <div class="img-frame"><img src="images/pic02.jpg" alt="GDevelop"></div>
+        <div class="card-frame"><img src="images/pic02.jpg" alt="GDevelop"></div>
         <h2>GDevelop</h2>
-        <p>Interactive experiences built with logic and imagination.</p>
-        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="btn-gold">Launch Experience</a>
+        <p>Advanced logic systems and interactive game design.</p>
+        <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="gold-btn">ACCESS</a>
     </section>
 
     <section>
-        <div class="img-frame"><img src="images/pic03.jpg" alt="YouTube"></div>
+        <div class="card-frame"><img src="images/pic03.jpg" alt="YouTube"></div>
         <h2>YouTube</h2>
-        <p>A visual gallery of gaming content and digital edits.</p>
-        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="btn-gold">Enter Channel</a>
+        <p>Cinematic gaming content and visual storytelling.</p>
+        <a href="https://youtube.com/@hotdogpandesal-gaming" target="_blank" class="gold-btn">WATCH</a>
     </section>
 
     <section>
-        <div class="img-frame"><img src="images/pic04.jpg" alt="GitHub"></div>
+        <div class="card-frame"><img src="images/pic04.jpg" alt="GitHub"></div>
         <h2>GitHub</h2>
-        <p>The technical foundation of my projects and codebases.</p>
-        <a href="https://github.com/Clainesemania" target="_blank" class="btn-gold">Review Code</a>
+        <p>Source code repositories and technical documentation.</p>
+        <a href="https://github.com/Clainesemania" target="_blank" class="gold-btn">INSPECT</a>
     </section>
 
     <section>
-        <h2>Still Improving</h2>
-        <p>Mastery is a journey, not a destination. Evolution is constant.</p>
-        <div style="margin-top: 40px; color: var(--ruby-rich); letter-spacing: 8px;">PROGRESSION</div>
+        <h2>Evolution</h2>
+        <p>Growth is the only constant in the digital frontier.</p>
+        <div style="margin-top: 50px; height: 1px; width: 80px; background: var(--maroon); box-shadow: 0 0 10px var(--gold);"></div>
     </section>
 
     <script>
-        // 1. Background Animation (Gold Bits)
-        const bg = document.getElementById('bg-canvas');
-        for (let i = 0; i < 25; i++) {
-            const bit = document.createElement('div');
-            bit.className = 'gold-bit';
-            const size = Math.random() * 3 + 1;
-            bit.style.width = size + 'px';
-            bit.style.height = size + 'px';
-            bit.style.left = Math.random() * 100 + '%';
-            bit.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            bit.style.animationDelay = (Math.random() * 10) + 's';
-            bg.appendChild(bit);
+        // 1. Optimized Particle Generation
+        for (let i = 0; i < 15; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'spark';
+            spark.style.left = Math.random() * 100 + '%';
+            spark.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            spark.style.animationDelay = Math.random() * 10 + 's';
+            document.body.appendChild(spark);
         }
 
-        // 2. Optimized Smooth Flashlight (Lerp)
-        let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
-        let currentX = targetX, currentY = targetY;
-
-        function smoothMove() {
-            currentX += (targetX - currentX) * 0.08;
-            currentY += (targetY - currentY) * 0.08;
-            document.getElementById('flashlight').style.setProperty('--x', currentX + 'px');
-            document.getElementById('flashlight').style.setProperty('--y', currentY + 'px');
-            requestAnimationFrame(smoothMove);
+        // 2. Smooth "Chase" Flashlight
+        let targetX = window.innerWidth/2, targetY = window.innerHeight/2, curX = targetX, curY = targetY;
+        function lerp() {
+            curX += (targetX - curX) * 0.08; curY += (targetY - curY) * 0.08;
+            document.getElementById('flashlight').style.setProperty('--x', curX + 'px');
+            document.getElementById('flashlight').style.setProperty('--y', curY + 'px');
+            requestAnimationFrame(lerp);
         }
-        smoothMove();
-
+        lerp();
         window.addEventListener('mousemove', e => { targetX = e.clientX; targetY = e.clientY; });
         window.addEventListener('touchstart', e => { targetX = e.touches[0].clientX; targetY = e.touches[0].clientY; });
 
-        // 3. Navigation Controls
+        // 3. Section Navigation Logic
         const sections = document.querySelectorAll('section');
-        const bar = document.getElementById('bar');
-        let index = 0;
-        let isLocked = false;
+        const navBar = document.getElementById('navBar');
+        let currentIdx = 0, isScrolling = false;
 
-        function changeSection(dir) {
-            if (isLocked) return;
-            isLocked = true;
+        function navigate(toIndex) {
+            if (isScrolling || toIndex < 0 || toIndex >= sections.length) return;
+            isScrolling = true;
             
-            sections[index].classList.remove('active');
-            if (dir === 'next') index = (index + 1) % sections.length;
-            else index = (index - 1 + sections.length) % sections.length;
+            sections[currentIdx].classList.remove('active');
+            currentIdx = toIndex;
+            sections[currentIdx].classList.add('active');
             
-            sections[index].classList.add('active');
-            bar.style.width = (index / (sections.length - 1) * 100) + '%';
-            
-            setTimeout(() => isLocked = false, 1000);
+            navBar.style.width = (currentIdx / (sections.length - 1) * 100) + '%';
+            setTimeout(() => isScrolling = false, 900);
         }
 
-        window.addEventListener('wheel', e => {
-            if (e.deltaY > 0) changeSection('next');
-            else changeSection('prev');
-        });
+        window.addEventListener('wheel', e => e.deltaY > 0 ? navigate(currentIdx + 1) : navigate(currentIdx - 1));
+        window.addEventListener('click', e => e.target.tagName !== 'A' && navigate((currentIdx + 1) % sections.length));
 
-        // Click to advance (if not clicking a link)
-        window.addEventListener('click', e => {
-            if (e.target.tagName !== 'A' && e.target.tagName !== 'SPAN') changeSection('next');
-        });
-
-        // Keyboard support
-        window.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSection('next');
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSection('prev');
+        // 4. Optimized Loader Termination
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 800);
         });
     </script>
 </body>
