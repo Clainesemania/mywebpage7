@@ -4,431 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claine | Portfolio</title>
-    <link rel="preload" as="image" href="images/pic01.jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    
     <style>
-        /* Define color palette inspired by the image */
         :root {
-            --navy-grey: #2d3e4f; /* Derived from the image's wall color */
-            --white-gold: #c5a059; /* Metallic gold from the console and mirror frame */
-            --light-cream: #f4efe7; /* Cream color from the stool */
-            --off-white: #fafafa; /* Background white */
-            --transition-speed: 0.6s;
-            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth ease-out for a premium feel */
+            --navy: #1b262c;     /* Deep navy grey */
+            --gold: #c5a059;     /* White gold metallic */
+            --marble: #f4f4f4;   /* Soft off-white marble */
+            --accent: #394a51;   /* Muted navy shadow */
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Playfair Display', serif;
-        }
-
-        body {
-            background-color: var(--off-white);
-            color: var(--navy-grey);
-            overflow: hidden; /* Prevent scrolling, controlled by JS sections */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: var(--navy); 
+            color: var(--marble); 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
             height: 100vh;
         }
 
-        /* Flashlight Effect */
+        /* --- Animated Background Waves --- */
+        .bg-animate {
+            position: fixed; inset: 0; z-index: -1;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--accent) 100%);
+            overflow: hidden;
+        }
+        .wave {
+            position: absolute; bottom: -10%; left: -10%; width: 120%; height: 50%;
+            background: rgba(197, 160, 89, 0.03); border-radius: 40%;
+            animation: drift 20s infinite linear;
+        }
+        .wave:nth-child(2) { animation-duration: 25s; opacity: 0.02; bottom: -15%; }
+        @keyframes drift { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* --- Vertical Progress Slider --- */
+        .progress-container {
+            position: fixed; right: 40px; top: 50%; transform: translateY(-50%);
+            height: 200px; width: 2px; background: rgba(255,255,255,0.1); z-index: 100;
+        }
+        .progress-thumb {
+            position: absolute; top: 0; width: 100%; height: 0%;
+            background: var(--gold); box-shadow: 0 0 15px var(--gold);
+            transition: height var(--ease);
+        }
+
+        /* --- Parallax Flashlight --- */
         #flashlight {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Let clicks pass through */
-            /* Start state */
-            background: radial-gradient(circle 200px at 50% 50%, rgba(197, 160, 89, 0.15), transparent 80%);
-            z-index: 1000;
+            position: fixed; inset: 0; pointer-events: none; z-index: 99;
+            background: radial-gradient(circle 250px at var(--x, 50%) var(--y, 50%), 
+                        rgba(197, 160, 89, 0.07) 0%, transparent 100%);
         }
 
-        /* Container to manage all sections */
-        .scroller-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        /* Base styling for all sections */
+        /* --- Sections --- */
         section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10%); /* Slide-in from bottom */
-            transition: opacity var(--transition-speed) var(--ease), 
-                        transform var(--transition-speed) var(--ease);
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            opacity: 0; visibility: hidden; padding: 2rem;
+            transform: translate3d(0, 50px, 0); transition: all 1s var(--ease);
+        }
+        section.active { opacity: 1; visibility: visible; transform: translate3d(0,0,0); }
+
+        h1, h2 { font-family: 'Playfair Display', serif; color: var(--gold); letter-spacing: 4px; }
+        h1 { font-size: clamp(3rem, 10vw, 5.5rem); text-transform: uppercase; }
+        p { max-width: 500px; color: #a1a1a1; line-height: 1.8; margin-top: 1rem; }
+
+        /* --- Parallax Project Card --- */
+        .parallax-wrapper {
+            position: relative; perspective: 1000px; margin-bottom: 2rem;
+        }
+        .card {
+            background: var(--marble); padding: 10px; border: 1px solid var(--gold);
+            transform: rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
+            transition: transform 0.1s linear;
+        }
+        .card img {
+            width: 350px; height: 200px; object-fit: cover; display: block;
+            filter: sepia(20%) contrast(110%);
         }
 
-        /* Class to show the current section */
-        section.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+        .gold-line {
+            width: 50px; height: 2px; background: var(--gold); margin-top: 40px;
+            box-shadow: 0 0 10px var(--gold);
         }
-
-        /* Parallax Layer Styling */
-        .parallax-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.1s linear; /* Fast response for mouse parallax */
-        }
-
-        /* Section 1: Introduction - Using the wall color for the first layer */
-        #intro .parallax-layer {
-            background-color: var(--navy-grey);
-            z-index: -2;
-        }
-
-        #intro h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: var(--white-gold);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-            margin-bottom: 0.5rem;
-        }
-
-        #intro p {
-            font-size: 1.5rem;
-            color: var(--light-cream);
-        }
-
-        /* Section 2: About - Transitioning colors */
-        #about .parallax-layer {
-            background-color: var(--white-gold);
-            opacity: 0.2; /* Subtler texture */
-        }
-
-        #about h2 {
-            font-size: 3rem;
-            color: var(--white-gold);
-            margin-bottom: 1rem;
-        }
-
-        .about-card {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border: 1px solid rgba(197, 160, 89, 0.1);
-            max-width: 500px;
-        }
-
-        .about-card h3 {
-            color: var(--navy-grey);
-            margin-bottom: 0.5rem;
-            font-size: 1.5rem;
-        }
-
-        .about-card p {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        /* Project Section Styling */
-        #gdevelop, #youtube, #github {
-            color: #fff;
-        }
-
-        /* Image frame styling inspired by the gold console and circular mirror */
-        .img-frame {
-            border: 4px solid var(--white-gold);
-            border-radius: 12px; /* Slight round like the stool/vases */
-            padding: 10px;
-            background-color: var(--off-white);
-            box-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s var(--ease);
-        }
-
-        .img-frame:hover {
-            transform: scale(1.05);
-        }
-
-        .img-frame img {
-            display: block;
-            border-radius: 8px; /* Inner radius for contrast */
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-            filter: grayscale(10%); /* Subtler feel */
-        }
-
-        /* Use images as background for project parallax layers to optimize */
-        #gdevelop .parallax-layer {
-            background-image: url('images/pic02.jpg'); /* Preloaded image for fast load */
-            background-size: cover;
-            opacity: 0.2;
-        }
-        
-        #youtube .parallax-layer {
-            background-image: url('images/pic03.jpg'); /* Not preloaded, but background images cache well */
-            background-size: cover;
-            opacity: 0.2;
-        }
-
-        #github .parallax-layer {
-            background-image: url('images/pic04.jpg'); /* Not preloaded */
-            background-size: cover;
-            opacity: 0.2;
-        }
-
-        section h2 {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #fff;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            margin-bottom: 1rem;
-        }
-
-        section p {
-            color: rgba(255,255,255,0.8);
-            max-width: 400px;
-            font-size: 1.1rem;
-        }
-
-        /* Simple link button with gold and navy interaction */
-        .gold-btn {
-            display: inline-block;
-            margin-top: 1.5rem;
-            padding: 10px 25px;
-            background-color: transparent;
-            color: var(--white-gold);
-            border: 2px solid var(--white-gold);
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: 0.3s var(--ease);
-        }
-
-        .gold-btn:hover {
-            background-color: var(--white-gold);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
-        }
-
-        /* Section 6: Still improving - Final section with wall color */
-        #finish .parallax-layer {
-            background-color: var(--navy-grey);
-            opacity: 1;
-            z-index: -2;
-        }
-
-        #finish h2 {
-            color: var(--light-cream);
-        }
-
-        #finish p {
-            color: var(--white-gold);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="parallax-layer-master" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -1;"></div>
-
-    <div class="scroller-container">
-
-        <section id="intro" class="active">
-            <div class="parallax-layer"></div> <h1>Claine</h1>
-            <p>Welcome to my Portfolio</p>
-        </section>
-
-        <section id="about">
-            <div class="parallax-layer"></div>
-            <h2>About Me 😉</h2>
-            <div class="about-grid" style="display: flex; gap: 1rem;">
-                <div class="about-card">
-                    <h3>Hobby ⭐</h3>
-                    <p>Gaming, Reading, Music</p>
-                </div>
-                <div class="about-card">
-                    <h3>Plans ⭐</h3>
-                    <p>Graduate, then Job</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="gdevelop">
-            <div class="parallax-layer"></div>
-            <div class="img-frame">
-                <img src="images/pic02.jpg" alt="GDevelop Logo" width="120" height="120">
-            </div>
-            <h2>GDevelop</h2>
-            <p>Game design on GitHub Pages</p>
-            <a href="https://gd.games/games/6d9ac45b-3c74-42bd-abdd-4529e874b4f0" target="_blank" class="gold-btn">View →</a>
-        </section>
-
-        <section id="youtube">
-            <div class="parallax-layer"></div>
-            <div class="img-frame">
-                <img src="images/pic03.jpg" alt="YouTube Gaming Content" width="120" height="120">
-            </div>
-            <h2>YouTube</h2>
-            <p>Gaming content showcase</p>
-            <a href="https://youtube.com/@hotdogpandesal-gaming?si=mxgZnGF4sPheFv-Z" target="_blank" class="gold-btn">View →</a>
-        </section>
-
-        <section id="github">
-            <div class="parallax-layer"></div>
-            <div class="img-frame">
-                <img src="images/pic04.jpg" alt="GitHub Code Portfolio" width="120" height="120">
-            </div>
-            <h2>GitHub</h2>
-            <p>Personal projects repository</p>
-            <a href="https://github.com/Clainesemania" target="_blank" class="gold-btn">View →</a>
-        </section>
-
-        <section id="finish">
-            <div class="parallax-layer"></div>
-            <h2>Still Improving</h2>
-            <p style="margin-top: 2rem;">A continuous journey</p>
-        </section>
-
-    </div>
-
+    <div class="bg-animate"><div class="wave"></div><div class="wave"></div></div>
     <div id="flashlight"></div>
 
+    <div class="progress-container">
+        <div class="progress-thumb" id="progressThumb"></div>
+    </div>
+
+    <section class="active">
+        <h1>Claine</h1>
+        <p>A Minimalist Portfolio in Navy & Gold</p>
+        <div class="gold-line"></div>
+    </section>
+
+    <section>
+        <h2>The Architect</h2>
+        <p>Student of the Web Development Craft. <br> Pursuing a balance of logic and luxury design.</p>
+    </section>
+
+    <section>
+        <div class="parallax-wrapper">
+            <div class="card"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=800" alt="Interior"></div>
+        </div>
+        <h2>GDevelop</h2>
+        <p>Interactive projects built with GDevelop engine.</p>
+    </section>
+
+    <section>
+        <div class="parallax-wrapper">
+            <div class="card"><img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&q=80&w=800" alt="Marble"></div>
+        </div>
+        <h2>YouTube</h2>
+        <p>Documenting gaming content and design evolution.</p>
+    </section>
+
+    <section>
+        <div class="parallax-wrapper">
+            <div class="card"><img src="https://images.unsplash.com/photo-1513519247388-193ad51c991b?auto=format&fit=crop&q=80&w=800" alt="Navy Gold"></div>
+        </div>
+        <h2>GitHub</h2>
+        <p>Source code for experimental web projects.</p>
+    </section>
+
+    <section>
+        <h2>Continuous</h2>
+        <p>Still Improving. Still Evolving.</p>
+        <div class="gold-line"></div>
+    </section>
+
     <script>
-        // --- 1. Fast Loading Strategy ---
-        // Preload only the primary images that appear in the first view to prioritize loading.
-        // We do this via HTML tags in the head for max performance, but we can also use JS for complex loading.
-        // Images not in the initial viewport will load naturally as the user scrolls.
-
-        // --- 2. Parallax and Flashlight Mouse Interactions ---
+        // 1. Mouse Follow (Flashlight & Card Parallax)
         const flashlight = document.getElementById('flashlight');
-        
-        // Define intensity of parallax for each section. Section 1 is strongest for a powerful entry.
-        const parallaxIntensities = [
-            -0.03, // Section 1 (Wall): Stronger movement
-             0.02, // Section 2 (About): Subtler movement
-            -0.03, // Section 3 (GDevelop Image Layer)
-            -0.03, // Section 4 (YouTube Image Layer)
-            -0.03, // Section 5 (GitHub Image Layer)
-            -0.03  // Section 6 (Finish): Solid again
-        ];
+        const cards = document.querySelectorAll('.card');
 
-        document.addEventListener('mousemove', (e) => {
-            // Flashlight movement
-            flashlight.style.setProperty('--x', e.clientX + 'px');
-            flashlight.style.setProperty('--y', e.clientY + 'px');
+        document.addEventListener('mousemove', e => {
+            const x = e.clientX;
+            const y = e.clientY;
+            flashlight.style.setProperty('--x', x + 'px');
+            flashlight.style.setProperty('--y', y + 'px');
 
-            // Apply Parallax effect to the current active section's layer
-            const activeParallaxLayer = document.querySelector('section.active .parallax-layer');
-            if (activeParallaxLayer) {
-                const currentIntensity = parallaxIntensities[currentIndex];
-                const xShift = e.clientX * currentIntensity;
-                const yShift = e.clientY * currentIntensity;
-                activeParallaxLayer.style.transform = `translate3d(${xShift}px, ${yShift}px, 0)`; // translate3d is hardware-accelerated for speed
-            }
+            // Card Tilt Effect
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const rx = (x - centerX) / 20;
+                const ry = (centerY - y) / 20;
+                card.style.setProperty('--rx', rx + 'deg');
+                card.style.setProperty('--ry', ry + 'deg');
+            });
         });
 
-        // Ensure flashlight centers initially on non-mouse devices
-        document.addEventListener('touchstart', (e) => {
-            flashlight.style.setProperty('--x', e.touches[0].clientX + 'px');
-            flashlight.style.setProperty('--y', e.touches[0].clientY + 'px');
-        });
+        // 2. Section Navigation & Slider Progress
+        const sections = document.querySelectorAll('section');
+        const thumb = document.getElementById('progressThumb');
+        let index = 0;
+        let isLocked = false;
 
-        // --- 3. Scroll and Navigation Control ---
-        const sections = document.querySelectorAll('.scroller-container section');
-        const container = document.querySelector('.scroller-container');
-        let currentIndex = 0;
-        let isScrolling = false; // Flag to prevent multiple scrolls at once
-
-        // Function to smoothly transition to a specific section
-        function scrollToSection(index) {
-            if (isScrolling || index === currentIndex) return;
-            isScrolling = true;
-
-            // Hide the old section
-            sections[currentIndex].classList.remove('active');
+        function update(newIndex) {
+            if (isLocked || newIndex < 0 || newIndex >= sections.length) return;
+            isLocked = true;
             
-            // Wait for transition, then reset its parallax
-            const oldLayer = sections[currentIndex].querySelector('.parallax-layer');
-            if (oldLayer) {
-                oldLayer.style.transform = 'translate3d(0,0,0)'; 
-            }
-
-            // Move to the new index
-            currentIndex = index;
+            sections[index].classList.remove('active');
+            index = newIndex;
+            sections[index].classList.add('active');
             
-            // Show the new section
-            sections[currentIndex].classList.add('active');
-
-            // Set scrolling lock off after a delay matching the CSS transition
-            setTimeout(() => {
-                isScrolling = false;
-            }, 650); // Slightly longer than transition speed
+            // Update Slider Height
+            const progress = ((index + 1) / sections.length) * 100;
+            thumb.style.height = progress + '%';
+            
+            setTimeout(() => isLocked = false, 1000);
         }
 
-        // Use Mouse Wheel for scrolling - Smooth and direct
-        window.addEventListener('wheel', (e) => {
-            if (isScrolling) return;
-
-            if (e.deltaY > 0 && currentIndex < sections.length - 1) {
-                // Scroll down
-                scrollToSection(currentIndex + 1);
-            } else if (e.deltaY < 0 && currentIndex > 0) {
-                // Scroll up
-                scrollToSection(currentIndex - 1);
-            }
+        // Scroll Input
+        window.addEventListener('wheel', e => {
+            if (e.deltaY > 0) update(index + 1);
+            else update(index - 1);
         });
 
-        // Use Keyboard Arrows for accessibility
-        window.addEventListener('keydown', (e) => {
-            if (isScrolling) return;
-
-            if (e.key === 'ArrowDown' && currentIndex < sections.length - 1) {
-                scrollToSection(currentIndex + 1);
-            } else if (e.key === 'ArrowUp' && currentIndex > 0) {
-                scrollToSection(currentIndex - 1);
-            }
+        // Click to advance
+        window.addEventListener('click', e => {
+            if (e.target.tagName !== 'A') update((index + 1) % sections.length);
         });
-
-        // Use touch swipe for mobile parallax and section control
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchend', (e) => {
-            if (isScrolling) return;
-
-            const touchEndY = e.changedTouches[0].clientY;
-            const yDiff = touchStartY - touchEndY;
-
-            if (Math.abs(yDiff) > 50) { // Threshold for a swipe
-                if (yDiff > 0 && currentIndex < sections.length - 1) {
-                    // Swipe up
-                    scrollToSection(currentIndex + 1);
-                } else if (yDiff < 0 && currentIndex > 0) {
-                    // Swipe down
-                    scrollToSection(currentIndex - 1);
-                }
-            }
-        });
-
     </script>
 </body>
 </html>
-
