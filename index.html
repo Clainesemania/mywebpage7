@@ -28,11 +28,37 @@
             height: 100vh;
         }
 
-        /* --- Animated Background --- */
-        .bg-gradient {
+        /* --- CINEMATIC INTRO --- */
+        #intro-curtain {
             position: fixed;
             inset: 0;
-            z-index: 0;
+            background: var(--marble-white);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+
+        .loader-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            color: var(--white-gold);
+            margin-bottom: 20px;
+        }
+
+        #percent-counter {
+            font-size: 3rem;
+            font-weight: 200;
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* --- Backgrounds --- */
+        .bg-gradient {
+            position: fixed; inset: 0; z-index: 0;
             background: linear-gradient(120deg, #ffffff 0%, #f4f4f4 50%, #ffffff 100%);
             background-size: 200% 200%;
             animation: gradientMove 15s ease infinite;
@@ -50,7 +76,7 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* --- Layout --- */
+        /* --- Horizontal Scroller --- */
         .snap-container {
             display: flex;
             overflow-x: auto;
@@ -81,16 +107,17 @@
         }
 
         section.is-active {
-            opacity: 1;
-            filter: blur(0);
-            transform: scale(1);
+            opacity: 1; filter: blur(0); transform: scale(1);
         }
 
-        /* --- Live Scrubber --- */
+        /* --- UI Elements --- */
         .slider-wrapper {
             position: fixed; bottom: 8vh; left: 50%; transform: translateX(-50%);
             width: 300px; height: 30px; display: flex; align-items: center; z-index: 101;
+            opacity: 0; transition: opacity 1s;
         }
+        .slider-wrapper.show { opacity: 1; }
+
         .slider-track {
             width: 100%; height: 2px; background: rgba(0,0,0,0.08);
             position: relative; cursor: pointer;
@@ -101,18 +128,12 @@
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
-        /* --- Typography --- */
-        h1, h2 { font-family: 'Playfair Display', serif; text-transform: uppercase; letter-spacing: 5px; }
-        h1 { font-size: clamp(3rem, 12vw, 7rem); margin-bottom: 20px; }
-        h2 { font-size: 1.8rem; color: var(--white-gold); margin-bottom: 15px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 12vw, 7rem); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 5px;}
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--white-gold); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 5px;}
         p { max-width: 500px; text-align: center; font-weight: 300; color: #666; line-height: 1.8; }
         
-        .nav-link { 
-            margin-top: 20px; font-size: 0.75rem; letter-spacing: 2px; text-decoration: none; 
-            color: var(--text-main); font-weight: 500; border-bottom: 1px solid var(--white-gold);
-        }
+        .nav-link { margin-top: 20px; font-size: 0.75rem; letter-spacing: 2px; text-decoration: none; color: var(--text-main); font-weight: 500; border-bottom: 1px solid var(--white-gold); }
 
-        /* --- Glass Cards --- */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(20px) saturate(160%);
@@ -126,15 +147,16 @@
             transition: transform 0.15s ease-out;
         }
 
-        .glass-card img {
-            width: 580px; max-width: 80vw; height: 340px; 
-            object-fit: cover; display: block; border-radius: 2px;
-        }
-
+        .glass-card img { width: 580px; max-width: 80vw; height: 340px; object-fit: cover; display: block; border-radius: 2px; }
         .gold-accent { width: 50px; height: 1px; background: var(--white-gold); margin: 25px 0; }
     </style>
 </head>
 <body>
+
+    <div id="intro-curtain">
+        <div class="loader-text">ESTABLISHING CONNECTION</div>
+        <div id="percent-counter">0%</div>
+    </div>
 
     <div class="bg-gradient"></div>
     <div class="marble-texture"></div>
@@ -146,7 +168,6 @@
     </div>
 
     <main class="snap-container" id="container">
-        
         <section class="is-active">
             <h1>Claine</h1>
             <div class="gold-accent"></div>
@@ -154,28 +175,22 @@
         </section>
 
         <section>
-            <div class="glass-card">
-                <img src="images/pic02.jpg" alt="GDevelop Showcase">
-            </div>
+            <div class="glass-card"><img src="images/pic02.jpg" alt="GDevelop"></div>
             <h2>GDevelop</h2>
-            <p>Exploring game mechanics through visual scripting and logical architecture.</p>
+            <p>Logical architecture meets visual storytelling.</p>
         </section>
 
         <section>
-            <div class="glass-card">
-                <img src="images/pic03.jpg" alt="YouTube Showcase">
-            </div>
+            <div class="glass-card"><img src="images/pic03.jpg" alt="YouTube"></div>
             <h2>YouTube</h2>
-            <p>Documenting gaming highlights and the creative process on @hotdogpandesal-gaming.</p>
+            <p>Curating highlights on @hotdogpandesal-gaming.</p>
             <a href="https://www.youtube.com/@hotdogpandesal-gaming" target="_blank" class="nav-link">VIEW CHANNEL</a>
         </section>
 
         <section>
-            <div class="glass-card">
-                <img src="images/pic04.jpg" alt="GitHub Showcase">
-            </div>
+            <div class="glass-card"><img src="images/pic04.jpg" alt="GitHub"></div>
             <h2>GitHub</h2>
-            <p>Source code and documentation for web projects and experiments.</p>
+            <p>Clean code and responsive builds.</p>
             <a href="https://github.com/Clainesemania" target="_blank" class="nav-link">EXPLORE REPOS</a>
         </section>
 
@@ -185,53 +200,79 @@
             <p>Getting better. one step closer.</p>
             <p style="margin-top: 40px; font-size: 0.8rem; opacity: 0.4;">© 2026 Claine</p>
         </section>
-
     </main>
 
     <script>
         const container = document.getElementById('container');
         const sections = document.querySelectorAll('section');
         const thumb = document.getElementById('sliderThumb');
-        const track = document.getElementById('sliderTrack');
+        const curtain = document.getElementById('intro-curtain');
+        const counter = document.getElementById('percent-counter');
+        const sliderWrapper = document.getElementById('sliderWrapper');
 
-        // 1. Mouse Interaction
+        // AUDIO ENGINE (The "Click")
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClick() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // PERCENTAGE COUNTER
+        let count = 0;
+        const interval = setInterval(() => {
+            count += Math.floor(Math.random() * 15) + 1;
+            if (count >= 100) {
+                count = 100;
+                clearInterval(interval);
+                setTimeout(revealSite, 500);
+            }
+            counter.innerText = count + "%";
+        }, 150);
+
+        function revealSite() {
+            playClick();
+            curtain.style.transform = 'translateY(-100%)';
+            sliderWrapper.classList.add('show');
+        }
+
+        // PARALLAX & LOGIC
         document.addEventListener('mousemove', e => {
-            const { clientX: x, clientY: y } = e;
             const activeSec = document.querySelector('section.is-active');
             if (activeSec) {
                 const card = activeSec.querySelector('.glass-card');
                 if (card) {
                     const rect = card.getBoundingClientRect();
-                    const rx = (x - (rect.left + rect.width / 2)) / 50;
-                    const ry = ((rect.top + rect.height / 2) - y) / 50;
+                    const rx = (e.clientX - (rect.left + rect.width / 2)) / 50;
+                    const ry = ((rect.top + rect.height / 2) - e.clientY) / 50;
                     card.style.setProperty('--rx', `${rx}deg`);
                     card.style.setProperty('--ry', `${ry}deg`);
                 }
             }
         });
 
-        // 2. Reveal Logic
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('is-active');
-                else entry.target.classList.remove('is-active');
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-active');
+                    if (count === 100) playClick(); // Click sound when snapping
+                } else entry.target.classList.remove('is-active');
             });
         }, { threshold: 0.5 });
         sections.forEach(sec => observer.observe(sec));
 
-        // 3. Slider Sync
         container.addEventListener('scroll', () => {
             const scrollPercent = (container.scrollLeft / (container.scrollWidth - container.clientWidth)) * 100;
             thumb.style.left = `${scrollPercent}%`;
         });
 
-        track.addEventListener('click', (e) => {
-            const rect = track.getBoundingClientRect();
-            const clickPos = (e.clientX - rect.left) / rect.width;
-            container.scrollLeft = clickPos * (container.scrollWidth - container.clientWidth);
-        });
-
-        // 4. Scroll Conversion
         container.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
